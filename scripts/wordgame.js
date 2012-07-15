@@ -126,7 +126,9 @@
 						c=$._wordSearch.theGrid[i][j]='_';
 					}
 					
-					$("<td>",{ 
+					var cell=$("<td>").appendTo(row);
+					
+					$("<div>",{ 
 						"class":"wsSquare",
 						"text" :c,
 						"data": {x:j,y:i}}).appendTo(row);
@@ -157,6 +159,7 @@
 				$._wordSearch.gameState.dragging=false;
 				$._wordSearch.gameState.endSq=$(this).data();
 				$._wordSearch.computeSelectedSquares();
+				$._wordSearch.checkSelectedWord();
 				$('.wsSelectedSquare').removeClass('wsSelectedSquare');
 				$('#currentWord').html($._wordSearch.selectedWord);
 				});
@@ -230,12 +233,17 @@
 			$('#currentWord').html($._wordSearch.gameState.selectedWord);
 			
 			
+			
+			
+		},
+		
+		checkSelectedWord: function(){
 			var words=$._wordGame.gameDescriptor.words;
 			for(w in words){
-				if($._wordSearch.gameState.selectedWord.toUpperCase()==words[w].toUpperCase()){
-					$('.wsSelectedSquare').addClass('wsCorrectSquare');
+					if($._wordSearch.gameState.selectedWord.toUpperCase()==words[w].toUpperCase()){
+						$('.wsSelectedSquare').addClass('wsCorrectSquare');
+					}
 				}
-			}
 		},
 		
 		highlightSquare: function(x,y){
