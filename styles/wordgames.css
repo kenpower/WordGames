@@ -1,0 +1,251 @@
+@charset "UTF-8";
+body {
+	margin: 0;
+	padding: 0;
+	font-size: 100%;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	text-align: center; 
+	vertical-align: middle;
+	color:#096;
+}
+
+ 
+#theGame{ 
+	width: 320px; 
+	margin: 0px auto; 
+}
+
+h1 {
+	text-align: center;
+	font-family: Tahoma, Geneva, sans-serif;
+	color:#096;
+	margin-bottom: 2px;
+	margin-top: 2px;
+	display:inline;
+}
+
+#help {
+	background-image:url('../images/help.png');
+	height:25px;
+	width:25px;
+	cursor: pointer;
+	background-size:cover;
+	display:inline-block;
+}
+
+
+
+
+#play, #quit {
+	
+	width: 140px;
+	padding: 0.25em 0;
+	text-align: center;
+	
+	font-size: 112.5%;
+	cursor: pointer;
+	color: #fff;
+	background-color: #069;
+}
+
+
+#word {
+	font-weight: bold;
+	font-size: 200%;
+	letter-spacing: 0.25em;
+	
+	margin-bottom: 0.4em;
+	margin-top:0.1em;
+	border-style:solid;
+	border-radius: 5px;
+	font-family:  Tahoma, "Lucida Console", Monaco,  monospace;
+}
+
+.missedLetter{
+	color:red;
+}
+
+#letters div {
+	width: 15%;
+	height:10%;
+	
+	margin: 0 1.6% 1.5% 0;
+	padding-top:3px;
+	padding-bottom:3px;
+	font-weight: bold;
+	font-size: 120%;
+	color: #fff;
+	background-color: #006;
+	float: left;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+#letters .row8{/*make space between  bottom row keys smaller*/
+	width: 11%;
+	margin-right:1.5%;
+}
+
+#letters .row9{/*make space between  bottom row keys smaller*/
+	width: 10%;
+	margin-right:1.1%;
+}
+
+#letters .letterDisabled{
+	background-color:#CCF;
+
+}
+
+#letters {
+	width: 300px;
+	display:block; 
+}
+
+/* turn of floating subsequent elements*/
+#letters + *{
+	clear:both;
+}
+
+centeredBlock, .button, #drawing, #letters{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.arrow-down {
+	width: 0; 
+	height: 0; 
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+	
+	border-top: 10px solid #f00;
+}
+
+#clue {
+	margin-top:5px;
+	}
+	
+#gameOver{	
+	text-align: center;
+	font-family: Tahoma, Geneva, sans-serif;
+	color:#f44;
+	margin-bottom: 2px;
+	font-size: 200%;
+	margin: 0px, auto;
+	
+}
+
+#btnNext{	
+	font-size: 150%;
+	margin: 0px, auto;
+	
+}
+
+#drawingBackground{
+			height: 300px;
+			width: 300px;
+			background-image: url('../images/clouds.jpg');
+			background-repeat:repeat-y;
+			position:relative;
+}
+
+#para{
+			height: 223px;
+			width: 148px;
+			background-image: 
+				url('../images/parachute_med.png');
+			margin: 0px auto;
+}
+
+#para_man{
+			height: 131px;
+			width: 155px;
+			background-image: 
+				url('../images/parachutist.png');
+			left:76px;
+			bottom:45px;
+			position:absolute;	
+			
+}
+
+#wsGrid {
+	font-weight: bold;
+	
+	letter-spacing: 0.25em;
+	
+	margin-bottom: 0.4em;
+	margin-top:0.1em;
+	border-style:solid;
+	border-radius: 5px;
+	font-family:   Monaco,  monospace;
+	cursor: pointer;
+	
+	
+}
+
+.wsSquare{
+	display: inline-block;
+	width: 26px;
+	height: 26px;
+	border 1px white;
+	text-align:center;
+	vertical-align: middle;
+	background: url('../images/squares.jpg') -26px -0px no-repeat;
+	color:#000;
+	padding: 0;
+	margin: 0;
+	font-size: 20px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	line-height:26px;
+	display: block;
+}
+.wsSelectedSquare{
+	background: url('../images/squares.jpg') -78px -0px no-repeat;
+	
+}
+.wsCorrectSquare{
+	background: url('../images/squares.jpg') -52px -0px no-repeat;
+	color:#FF0;
+}
+
+/*iphone styles go here*/
+@media screen and (max-device-height: 480px){
+#drawingBackground{
+			height: 150px;
+			width: 300px;
+			background-image: url('../images/clouds.jpg');
+			background-repeat:repeat-y;
+			position:relative;
+}
+
+#para{
+			height: 110px;
+			width: 270px;
+			background-image: 
+				url('../images/parachute_fat.png');
+			margin: 0px auto;
+}
+
+#para_man{
+			height: 75px;
+			width: 89px;
+			background-image: 
+				url('../images/parachutist_small.png');
+			left:105px;
+			bottom:0px;
+			position:absolute;	
+			
+}  
+
+#gameOver{	
+	font-size: 150%;
+	
+}
+
+body {
+	height:450px;
+ }
+ 
+}
