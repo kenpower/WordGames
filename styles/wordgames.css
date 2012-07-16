@@ -184,11 +184,18 @@ centeredBlock, .button, #drawing, #letters{
 	
 }
 
+table, tr, td{
+	padding: 0;
+	margin: 0;
+	border-style:none;
+	border-spacing:0;
+	}
+
 .wsSquare{
 	display: inline-block;
 	width: 26px;
 	height: 27px;
-	border-right: 1px white;
+	
 	text-align: center;
 	
 	background: url('../images/squares.jpg') -26px -0px no-repeat;
@@ -200,14 +207,33 @@ centeredBlock, .button, #drawing, #letters{
 	font-weight: bold;
 	line-height:27px;
 	display: block;
+	text-transform: uppercase;
+	
 }
 .wsSelectedSquare{
-	background: url('../images/squares.jpg') -78px -0px no-repeat;
+	background: url('../images/squares.jpg') -78px -0px no-repeat ! important;
+	color: #333 ! important;
 	
 }
 .wsCorrectSquare{
-	background: url('../images/squares.jpg') -52px -0px no-repeat;
-	color:#FF0;
+	background: url('../images/squares.jpg') -130px -0px no-repeat;
+	color:#FFF;
+}
+
+.wsWordFound{
+	color:#888;
+	text-decoration:line-through;
+	}
+
+#wsWordsToFind{
+	text-align: center;
+	margin-left:auto; 
+	margin-right:auto;
+}
+
+#wsWordsToFind td{
+	padding: 2px;
+	margin-right: 2px;
 }
 
 /*iphone styles go here*/

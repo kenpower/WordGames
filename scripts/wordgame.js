@@ -11,7 +11,7 @@
 		
 		gameState:{"dragging":false},
 	
-		instructionsText:"Instructions",
+		instructionsText:"Instructions, blah, blah blah, blah blah, blah ",
 		
 		theGrid:[],
 		
@@ -23,7 +23,7 @@
 			
 					
 			$('<p class= "instructions" />', {
-					text: $._hangMan.instructionText
+					text: $._wordSearch.instructionText
 					
 					}).appendTo(theGame).hide();
 					
@@ -31,27 +31,20 @@
 			$('.instructions').click(function(){$('.instructions').slideToggle();});
 			
 			
-			theGame.append("<div id='currentWord'>test</div>");
-			/*
-			$('#gameOver').hide();
-			$('#btnNext').hide();
-		
-			theGame.append("<div id='clue'></div>");
-			theGame.append("<div id='word'>Word</div>");
-			theGame.append("<div id='letters'>Letters</div>");
-			theGame.append("<div id='gameOver'></div>"+
-				"<div class='nextButton'><button id='btnNext'>Continue...</button></div>");
-			$('#gameOver').hide();
-			$('#btnNext').hide();
 			
-			//$('#drawingBackground').spStop();*/
-	
-	
-			/*
-			$._wordSearch.newHangmanGame();
-			$._WordSearch.upDateImage();
-			if($._hangMan.callBacks.OnGameStart)
-					$._hangMan.callBacks.OnGameStart($._hangMan.gameState);*/
+			
+			var words=$._wordGame.gameDescriptor.words;
+			var table =$('<table id="wsWordsToFind">').appendTo(theGame);
+			
+			var row;
+			for(i=0;i<words.length;i++){
+				if(i%2==0)
+					row=$('<tr>').appendTo(table);
+				$('<td>',{"text" :words[i].toUpperCase()}).addClass(function(index) {
+  					return "word-" + i;}).appendTo(row);
+			}
+			
+			
 					
 			//populate the grid
 			gridSize=$._wordSearch.gameState.gridSize=12;
@@ -65,7 +58,7 @@
 			
 			var fitFuncs=[$._wordSearch.fitWordHoriz,$._wordSearch.fitWordVert,$._wordSearch.fitWordDiag]; // these are the3 directions for fitting words
 			
-			var words=$._wordGame.gameDescriptor.words;
+
 			
 			var numSqs=gridSize*gridSize;
 			
@@ -120,10 +113,13 @@
 				var row=$('<tr>',{
 				"class":"row"});
 				
+				var chars = "abcdefg";
+	
 				for(j=0;j<gridSize;j++){
 					c=$._wordSearch.theGrid[i][j];
 					if(c==' '){
-						c=$._wordSearch.theGrid[i][j]='_';
+						var rnum = Math.floor(Math.random() * chars.length);
+						//c=$._wordSearch.theGrid[i][j]=chars.substring(rnum,rnum+1);
 					}
 					
 					var cell=$("<td>").appendTo(row);
@@ -131,10 +127,12 @@
 					$("<div>",{ 
 						"class":"wsSquare",
 						"text" :c,
-						"data": {x:j,y:i}}).appendTo(row);
+						"data": {x:j,y:i}}).appendTo(cell);
 				}
 				$('#wsGrid').append(row);
 			}
+			
+			theGame.append("<div id='currentWord'></div>");
 			
 			$._wordSearch.gameState.selectedWord='';
 			
@@ -242,8 +240,11 @@
 			for(w in words){
 					if($._wordSearch.gameState.selectedWord.toUpperCase()==words[w].toUpperCase()){
 						$('.wsSelectedSquare').addClass('wsCorrectSquare');
+						$('.word-'+w).addClass('wsWordFound');
 					}
 				}
+				
+			
 		},
 		
 		highlightSquare: function(x,y){
