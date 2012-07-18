@@ -23,7 +23,7 @@
 			
 					
 			$('<p class= "instructions" />', {
-					text: $._wordSearch.instructionText
+					text: $._wordSearch.instructionsText
 					
 					}).appendTo(theGame).hide();
 					
@@ -113,13 +113,13 @@
 				var row=$('<tr>',{
 				"class":"row"});
 				
-				var chars = "abcdefg";
+				var chars = "abcdefghijklmnopqrstuvwxyz";
 	
 				for(j=0;j<gridSize;j++){
 					c=$._wordSearch.theGrid[i][j];
 					if(c==' '){
 						var rnum = Math.floor(Math.random() * chars.length);
-						//c=$._wordSearch.theGrid[i][j]=chars.substring(rnum,rnum+1);
+						c=$._wordSearch.theGrid[i][j]=chars.substring(rnum,rnum+1);
 					}
 					
 					var cell=$("<td>").appendTo(row);
@@ -136,32 +136,104 @@
 			
 			$._wordSearch.gameState.selectedWord='';
 			
+			$('.wsSquare').click(function(){;});
+			
+			$('.wsSquare').on("touchstart",function(event){
+				event.preventDefault();
+				event.stopPropagation();
+				$._wordSearch.gameState.dragging=true;
+				$._wordSearch.gameState.startSq=$(event.target).data();
+				$._wordSearch.gameState.endSq=$._wordSearch.gameState.startSq;
+				$._wordSearch.computeSelectedSquares();	
+				$('#currentWord').html("ts:");			
+				});
+		
+			$('.wsSquare').on("touchmove",function(event){
+				event.preventDefault();
+				event.stopPropagation();
+				var evt=event.originalEvent;
+				var elem = document.elementFromPoint(evt.pageX, evt.pageY);
+				//$('#currentWord').html("te:"+evt.pageX+";"+evt.pageY+$(elem).html());	
+				if($._wordSearch.gameState.dragging){
+					$._wordSearch.gameState.endSq=$(elem).data();
+					$._wordSearch.computeSelectedSquares();
+					
+				}
+			});		
+			
+			$('.wsSquare').on("touchend",function(event){		
+				event.preventDefault();
+				event.stopPropagation();
+				$._wordSearch.gameState.dragging=false;
+				
+				$._wordSearch.computeSelectedSquares();
+				$._wordSearch.checkSelectedWord();
+				$('.wsSelectedSquare').removeClass('wsSelectedSquare');
+				$('#currentWord').html("mu:"+$._wordSearch.selectedWord);
+				
+			});	
+				
+				
+			
 			$('.wsSquare').mouseenter(function(){
-				//$(this).addClass("wsSelectedSquare");
 				if($._wordSearch.gameState.dragging){
 					$._wordSearch.gameState.endSq=$(this).data();
 					$._wordSearch.computeSelectedSquares();
-				}
-				
+					
+					}
 				});
+				
 			
-			$('.wsSquare').mousedown(function(){
+			
+			$('.wsSquare').mousedown(function(){	
 				$._wordSearch.gameState.dragging=true;
 				$._wordSearch.gameState.startSq=$(this).data();
 				$._wordSearch.gameState.endSq=$(this).data();
 				$._wordSearch.computeSelectedSquares();
 				});
 			
+	
 			$('.wsSquare').mouseup(function(){
-				
 				$._wordSearch.gameState.dragging=false;
+				
 				$._wordSearch.gameState.endSq=$(this).data();
 				$._wordSearch.computeSelectedSquares();
 				$._wordSearch.checkSelectedWord();
 				$('.wsSelectedSquare').removeClass('wsSelectedSquare');
-				$('#currentWord').html($._wordSearch.selectedWord);
-				});
+
+				});		
+				
+			$('#wsGrid').mouseleave(function(){
+				$._wordSearch.gameState.dragging=false;
+				$._wordSearch.computeSelectedSquares();
+				$._wordSearch.checkSelectedWord();
+				$('.wsSelectedSquare').removeClass('wsSelectedSquare');
+
+				});		
 			
+			/*$('.wsSquare').on("touchend",function(event){
+				event.preventDefault();
+				event.stopPropagation();
+				$._wordSearch.gameState.dragging=false;
+				
+				var evt=event.originalEvent;
+
+				var elem = document.elementFromPoint(evt.changedTouches[0].pageX, evt.changedTouches[0].pageY);	
+				
+				var s=evt.pageX+';'+evt.pageY+';' +$(elem).html()+'|';
+				for(i=0;i< event.originalEvent.changedTouches.length;i++){
+					s+=String(event.originalEvent.changedTouches[i].pageX);
+				}
+				$('#currentWord').html(s);
+				
+			
+				$._wordSearch.gameState.endSq=$(elem).data();
+				$._wordSearch.computeSelectedSquares();
+				$._wordSearch.checkSelectedWord();
+				$('.wsSelectedSquare').removeClass('wsSelectedSquare');
+				
+				});
+			*/	
 			$('body').disableSelection();
 			
 			
@@ -228,7 +300,7 @@
 			if(xInc==-1 || (xInc==0 && yInc==-1) ){
 				$._wordSearch.gameState.selectedWord=$._wordSearch.gameState.selectedWord.split("").reverse().join("");
 			}
-			$('#currentWord').html($._wordSearch.gameState.selectedWord);
+			//$('#currentWord').html($._wordSearch.gameState.selectedWord);
 			
 			
 			
