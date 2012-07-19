@@ -672,14 +672,395 @@
 		}
 	};
 	
-
-  $.fn.wordGame = function(callbacks,descriptor) {
+$._wordMix={ //word mix game methods & state
+			
+		callBacks:{},
 		
-	var gameTypes=new Array("hangman", "wordsearch");
+		getWord: function () {
+			
+			return $._wordGame.gameDescriptor["answer"];
+		
+		},
+		
+		getClue: function () {
+			
+			return $._wordGame.gameDescriptor["clue"];
+		
+		},
+		
+		
+		
+		
+		initGame: function (theGame) {
+			
+			
+			//$('meta[name="viewport"]').attr('content', 'width=' +300 + ', user-scalable:no');
+			 
+			$._wordMix.gameState={};
+			
+			$._wordMix.manImageProperties={file:"images/parachutist_small.png",framewidth:89,height:75};
+			$._wordMix.instructionTxt="Hangman is a word-guessing game. The row of dashes indicates the number of letters to be guessed. "+
+				"Click or tap a letter. If it's in the word, it replaces the dash(es). Each wrong guess results in a string being broken on the parachute. When all the strings are broken our friend falls to the ground. "+
+				"Your role is to guess the word correctly before the victim meets his grisly fate. ";
+			
+			
+			theGame.html("<div id='title'><h1>WordMix</h1><div id='help'></div></div>");
+			$(theGame).addClass('wordmix');
+					
+			$('<p class= "instructions" />', {
+					text: $._wordMix.instructionTxt
+					
+					}).appendTo(theGame).hide();
+					
+			$('#title').click(function(){$('.instructions').slideToggle();});
+			$('.instructions').click(function(){$('.instructions').slideToggle();});
+			
+			theGame.append("<div id='drawingBackground'><div id='para'></div>"+
+				"<div id='para_man'></div></div>");
+			
+			$('#gameOver').hide();
+			$('#btnNext').hide();
+		
+			theGame.append("<div id='clue'></div>");
+			theGame.append("<div id='word'></div>");
+			theGame.append("<div id='letters'>Letters</div>");
+			theGame.append("<div id='gameOver'></div>"+
+				"<div class='nextButton'><button id='btnNext'>Continue...</button></div>");
+			$('#gameOver').hide();
+			$('#btnNext').hide();
+			
+			
+			$._wordMix.newGame();
+			//$._wordMix.upDateImage();
+			
+			//if($._wordMix.callBacks.OnGameStart)
+					//$._wordMix.callBacks.OnGameStart($._wordMix.gameState);
+	
+			
+		},
+		
+		
+		newGame: function () {
+			
+			console.log("entering init");
+			/*
+			$('#quit').show();
+			$('#letters').show();
+			$('#word').show();
+			$('#gameOver').hide();
+			$('#btnNext').hide();*/
+			
+		
+			$._wordMix.gameState=new Object();
+			$.extend($._wordMix.gameState,$._wordGame.gameDescriptor);
+			$._wordMix.gameState.MAX_LENGTH=9;		
+			$._wordMix.gameState.LETTERS_TO_SELECT=12;
+			$._wordMix.gameState.badGuesses=0;		   
+			$._wordMix.gameState.correctGuesses = 0;
+			$._wordMix.gameState.wordToGuess = $._wordMix.getWord().toUpperCase();
+			$._wordMix.gameState.wordLength = $._wordMix.gameState.wordToGuess.length;
+			$._wordMix.gameState.usedLetters="";
+			$._wordMix.gameState.letterstoGuess=$._wordMix.gameState.wordLength;
+			
+			$("#clue").html("Clue: "+$._wordMix.getClue());
+			
+			// create row of underscores the same length as letters to guess
+			var placeholders = '';
+			var letters='';
+			var lettercount=0;
+		
+			//strip out all non alphas and clip to max length
+			for (var i = 0; i < $._wordMix.gameState.wordLength; i++) {
+				var c= $._wordMix.gameState.wordToGuess.charAt(i); //use charAt fror ie6,7
+				if(c>='A' && c<='Z' && lettercount <$._wordMix.gameState.MAX_LENGTH){
+					placeholders += c;
+					letters+=c;
+					lettercount++
+				}
+			}
+			
+			$._wordMix.gameState.wordToGuess=placeholders;
+			$._wordMix.gameState.wordLength=$._wordMix.gameState.wordToGuess.length;
+			
+			for (var i = 0; i < $._wordMix.gameState.wordLength; i++) {
+				//$('#word').html(placeholders) ;
+				$('<div/>', {
+					click: function(){$._wordMix.removeLetter($(this))},
+					"id": "letter"+i,
+					"class":"letterPlace letterEmpty letterBtn",
+					"text":"?"
+					}).appendTo('#word'); 
+			}
+			 
+			$('#letters').html('');
+			
+			console.log("entering init0:" + letters);	
+			
+			// fill remianing slots in letters array with random characters
+			var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+			for(i=letters.length;i<$._wordMix.gameState.LETTERS_TO_SELECT;i++){
+				
+				do{// only add letters not already in set
+					var rnum = Math.floor(Math.random() * chars.length);
+					c=chars.substring(rnum,rnum+1);
+					console.log("getting rnd letter:"+letters+"+"+c);
+				}while(letters.indexOf(c)!=-1);
+				letters+=c;
+				
+			}
+			console.log("entering init1");
+			
+			//shuffle letters using Fisher-Yates shuffle
+			var a = letters.split("");
+ 			while (--i) {
+				  var j = Math.floor(Math.random() * (i + 1))
+				  var temp = a[i];
+				  a[i] = a[j];
+				  a[j] = temp;
+			}
+			
+			letters=a.join("");
+			
+			var buttonClass="letterBtn";
+			var ttable=$('<table/>').appendTo('#letters');
+			var trow=trow=$('<tr/>').appendTo(ttable);
+			for (i = 0; i < letters.length; i++) {
+				
+				if(i==5) {
+					trow=$('<tr/>').appendTo(ttable);
+					
+				}
+				var tcell=$('<td/>').appendTo(trow);
+				$('<div/>', {
+					click: function(){$._wordMix.letterTried($(this).html(),$(this).attr('id'));},
+					"id": "letterButton"+i,
+					"class":buttonClass,
+					"text":letters[i]
+					}
+					).appendTo(tcell); //ie6,7 hack to add html after creation
+			}
+			
+			console.log("entering init2");	
+			
+			/*$(document).keypress(function(event){
+				$._wordMix.letterTried(String.fromCharCode(event.which).toUpperCase());
+				});*/
+				
+			$._wordMix.gameState.onGoing=true;
+		
+			
+		},
+		
+		letterTried: function (letter,btnID) {
+			btnID='#'+btnID;
+			if(!$._wordMix.gameState.onGoing) return;
+			
+			//check if char is alphabetic
+			var re = /^([a-zA-Z])$/;
+
+			if(!re.test(letter)){
+				return; //not apha, ignore
+			}
+			
+			
+			
+			if($(btnID).hasClass("letterDisabled"))
+			    return; // button disabled ignore
+			
+			
+			$._wordMix.gameState.usedLetters+=letter;
+				
+			
+			if($._wordMix.addLetter(letter,btnID)) // if letter gets added, disable this one
+				$(btnID).addClass("letterDisabled",btnID);
+			
+		},
+		
+		addLetter:function(letter,btnID){
+			if($(".letterEmpty").length==0)
+				return false;
+				
+			$(".letterEmpty").first().
+				html(letter).
+				data('srcBtn',btnID).
+				removeClass("letterEmpty");
+			
+			if($(".letterEmpty").length==0)	
+			{
+				$._wordMix.checkWord();
+			}
+			
+			return true;
+		
+		},
+		
+		checkWord: function(){
+			var word='';
+			$('.letterPlace').each(function(){
+					word+=$(this).html()
+					});
+			
+			if($._wordMix.gameState.wordToGuess===word){
+				$('#word').addClass("wordCorrect");
+				$._wordMix.gameState.won=true;
+				$._wordMix.gameOver();
+				
+		   	}
+			else{
+				$('#word').addClass("wordWrong");
+			}
+		   
+	
+			
+		},
+		
+		removeLetter: function(elem){
+			if(elem.hasClass("letterEmpty"))
+				return;
+				
+	
+			$('#word').removeClass("wordCorrect");	
+			$('#word').removeClass("wordWrong");
+			
+			var btnSrc=elem.data('srcBtn');
+			$(btnSrc).removeClass("letterDisabled");
+			
+			elem.html('?')
+				.addClass("letterEmpty")
+				.removeData('srcBtn');
+				
+
+			
+			
+		},
+		
+		checkLetter: function (letter) {
+		   var placeholders = $('#word').html(),
+		   		wrongGuess = true;
+		   
+		   // split the placeholders into an array
+		   placeholders = placeholders.split('');
+		   // loop through the array
+		   for (var i = 0; i < $._wordMix.gameState.wordLength; i++) {
+			  // if the selected letter matches one in the word to guess,
+			  // replace the underscore and increase the number of correct guesses
+			  if ($._wordMix.gameState.wordToGuess.charAt(i).toUpperCase() == letter.toUpperCase()) {
+				 placeholders[i] = letter;
+				 wrongGuess = false;
+				$._wordMix.gameState.letterstoGuess--;
+				
+				 
+				 
+			  }
+		   }
+		   if(wrongGuess===false){
+			   $._wordMix.gameState.correctGuesses++;
+		   }else{
+			   $._wordMix.gameState.badGuesses++;
+			   
+		   }
+		   // if the guess was incorrect, increment the number of bad
+		   // guesses and redraw the canvas
+		   //drawCanvas();
+		   //$._wordMix.upDateImage();
+		   
+		   
+		   // convert the array to a string and display it again
+		   placeholders=placeholders.join('');
+		   $('#word').html(placeholders);
+		   
+		   
+		   
+		   //check for wining condition
+		   if($._wordMix.gameState.letterstoGuess===0){
+				$._wordMix.gameState.won=true;
+				$._wordMix.gameOver();
+		   }
+		   
+		   if($._wordMix.gameState.badGuesses >=7){
+				$._wordMix.gameState.lose=true;
+				$._wordMix.gameOver()
+		   }
+		 
+		},
+		
+		gameContinue: function(){
+			if($._wordMix.callBacks.OnGameContinue)
+					$._wordMix.callBacks.OnGameContinue($._wordMix.gameState);
+					
+			 window.location.reload();			
+		},
+		
+		gameOver: function (){
+			$._wordMix.gameState.onGoing=false;
+			$._wordMix.showResult();
+			var msg="";
+			
+			if($._wordMix.gameState.won===true){
+				if($._wordMix.callBacks.OnGameWon)
+					$._wordMix.callBacks.OnGameWon($._wordMix.gameState);
+	
+
+				msg="Well done! You found the word.";
+				
+				
+			}
+	
+			if($._wordMix.gameState.lose===true){
+				$('#para').fadeOut("slow");
+				$('#para_man').animate({
+					opacity: 0.0,
+					bottom: '-=150'
+					}, 
+					2000
+					);
+				msg="Hard luck! You didn't find the word.";
+				if($._wordMix.callBacks.OnGameLost)
+					$._wordMix.callBacks.OnGameLost($._wordMix.gameState);
+			}
+			
+			//save gamestate
+			$.getJSON( $._wordMix.gameState.saveScript, $._wordMix.gameState); 
+			
+			
+
+			$('#letters').hide();
+			
+			$('#gameOver').html(msg).show("slow");
+			$('#btnNext').show("slow").click($._wordMix.gameContinue);
+			
+			
+		},
+		
+
+		
+
+		// When the game is over, display missing letters in red
+		showResult: function () {
+			var placeholders = word.innerHTML;
+			placeholders = placeholders.split('');
+			for (i = 0; i < placeholders.length; i++) {
+				if (placeholders[i] == '_') {
+				placeholders[i] = '<span class="missedLetter">' + $._wordMix.gameState.wordToGuess.charAt(i).toUpperCase() + '</span>';
+				}
+			}
+			word.innerHTML = placeholders.join('');
+		},
+		
+		upDateImage: function (){
+			var numStrings=7;
+			var s=$._wordMix.gameState.badGuesses+1;
+			$('#para').spState(s);
+		}
+	};
+	
+  $.fn.wordGame = function(callbacks) {
+		
+	var gameTypes=new Array("hangman", "wordsearch", "wordmix");
 	
 	
 	
-	var gd = descriptor;
+	var gd = {};
 
  	var params = {};
 	//pull out params of query string
@@ -691,15 +1072,18 @@
             }
     }
 	
-	var userID={"name":params.name};
 	
-	if(!gd){
+	var gameData={"name":params.name,"gameType":params.gameType};
+	
+	
+	
+	
 		$.ajax( //get the question & game
 		{
 				url: 'scripts/getGame.php',
 				dataType: "json",
 				async: false,
-				data: userID,
+				data: gameData,
 				success: function(data)
 				{
 						gd = data;
@@ -708,7 +1092,7 @@
 					j=jqXHR;
 					}
 	});	
-	}
+	
 		
 	$._wordGame.gameDescriptor=gd||{};
 	
@@ -723,6 +1107,9 @@
 				break;
 			case "wordsearch":
 				$._wordSearch.initGame(this);
+				break;			
+			case "wordmix":
+				$._wordMix.initGame(this);
 				break;
 		}
 	}
