@@ -18,6 +18,8 @@
 		initGame: function (theGame) {
 			
 			$.extend($._wordSearch.gameState,$._wordGame.gameDescriptor);
+			$(theGame).addClass('wordsearch');
+			
 			
 			theGame.html("<div id='title'><h1>WordSearch</h1><div id='help'></div></div>");
 			
@@ -422,7 +424,7 @@
 			//$('meta[name="viewport"]').attr('content', 'width=' +300 + ', user-scalable:no');
 			 
 			$._hangMan.gameState={};
-			
+			$(theGame).addClass('hangman');
 			$._hangMan.manImageProperties={file:"images/parachutist_small.png",framewidth:89,height:75};
 			$._hangMan.instructionTxt="Hangman is a word-guessing game. The row of dashes indicates the number of letters to be guessed. "+
 				"Click or tap a letter. If it's in the word, it replaces the dash(es). Each wrong guess results in a string being broken on the parachute. When all the strings are broken our friend falls to the ground. "+
@@ -782,14 +784,17 @@ $._wordMix={ //word mix game methods & state
 			$._wordMix.gameState.wordToGuess=placeholders;
 			$._wordMix.gameState.wordLength=$._wordMix.gameState.wordToGuess.length;
 			
+			var ttable1=$('<table/>').appendTo('#word');
+			var trow1=$('<tr/>').appendTo(ttable1);
+			 
 			for (var i = 0; i < $._wordMix.gameState.wordLength; i++) {
-				//$('#word').html(placeholders) ;
+				var tcell1=$('<td/>').appendTo(trow1);
 				$('<div/>', {
 					click: function(){$._wordMix.removeLetter($(this))},
 					"id": "letter"+i,
 					"class":"letterPlace letterEmpty letterBtn",
 					"text":"?"
-					}).appendTo('#word'); 
+					}).appendTo(tcell1); 
 			}
 			 
 			$('#letters').html('');
@@ -826,7 +831,7 @@ $._wordMix={ //word mix game methods & state
 			var trow=trow=$('<tr/>').appendTo(ttable);
 			for (i = 0; i < letters.length; i++) {
 				
-				if(i==5) {
+				if(i==6) {
 					trow=$('<tr/>').appendTo(ttable);
 					
 				}

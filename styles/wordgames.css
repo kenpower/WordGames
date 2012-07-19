@@ -82,6 +82,22 @@ h1 {
 	cursor: pointer;
 }
 
+#letters div {
+	width: 15%;
+	height:10%;
+
+	margin: 0 1.6% 1.5% 0;
+	padding-top:3px;
+	padding-bottom:3px;
+	font-weight: bold;
+	font-size: 120%;
+	color: #fff;
+	background-color: #006;
+	float: left;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
 .hangman #letters .row8{/*make space between  bottom row keys smaller*/
 	width: 11%;
 	margin-right:1.5%;
@@ -97,10 +113,6 @@ h1 {
 
 }
 
-#letters {
-	width: 300px;
-	display:block; 
-}
 
 /* turn of floating subsequent elements*/
 #letters + *{
@@ -248,31 +260,49 @@ table, tr, td{
 	font-size: 30px;
 	color: #fff;
 	background-color: #3cf;
-	float: left;
+	
 	border-radius: 5px;
 	cursor: pointer;
 }
 
-.wordmix #letters {
-	padding-left:50px;
-	padding-right:50px;
+.wordmix #letters table {
+margin-left: auto;
+margin-right: auto;
 	
-
 }
+
+.wordmix #word table {
+margin-left: auto;
+margin-right: auto;
+	
+}
+
+.wordmix #word{
+	border:none;
+	
+	width: 320px;
+}
+
 
 .wordmix #letters .letterDisabled{
 	background-color: #fff;
+	
 }
 
 
 #letters td{
-	margin:4px;}
+	padding:4px;}
 
 .wordmix #word{
 	padding-bottom:5px;
 	padding-top:5px;
 	background-color: #6cf;
 	height:46px;
+}
+
+.wordmix #word .letterBtn{
+	width: 33px;
+	margin: 0 1px 0 1px;
 }
 
 .wordmix #word.wordCorrect{
@@ -283,7 +313,13 @@ table, tr, td{
 	background-color: #C66;
 }
 
-.wordmix .letterEmpty {
+.wordmix #word .letterEmpty {
+	background-color: #fff;
+	width: 31px;
+	height:33px;
+	border-width:1px;
+	border-color:#CCC;
+	border-style:solid;
 
 }
 
