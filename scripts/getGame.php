@@ -24,13 +24,14 @@ elseif($_GET['gameType']=='wordsearch'){
 
 
 elseif($_GET['gameType']=='wordmix'){
-	$string = file_get_contents("questions.json");
+	$string = file_get_contents("wordMixQuestions.json");
 	$qs=json_decode($string,true);
 	//echo 'Last error: ', json_last_error(), PHP_EOL, PHP_EOL;
 
 	$idx=rand(0,sizeof($qs)-1);
 	$arr["clue"]=$qs[$idx]['clue'];
 	$arr["answer"]=$qs[$idx]['answer'];
+	$arr["image"]=$qs[$idx]['image'];
 
 }
 

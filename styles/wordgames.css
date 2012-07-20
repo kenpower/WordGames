@@ -1,25 +1,30 @@
 @charset "UTF-8";
+/*===========================================
+common formatting
+=============================================*/
 body {
 	margin: 0;
 	padding: 0;
 	font-size: 100%;
 	font-family: Arial, Helvetica, sans-serif;
 	font-weight: bold;
-	text-align: center; 
+	
+	
 	vertical-align: middle;
-	color:#096;
+	color:#036;
 }
 
  
 #theGame{ 
 	width: 320px; 
-	margin: 0px auto; 
+	margin: 0 auto; 
+	align: center; 
+	text-align: center;
 }
 
 h1 {
 	text-align: center;
 	font-family: Tahoma, Geneva, sans-serif;
-	color:#096;
 	margin-bottom: 2px;
 	margin-top: 2px;
 	display:inline;
@@ -27,11 +32,12 @@ h1 {
 
 #help {
 	background-image:url('../images/help.png');
-	height:25px;
-	width:25px;
+	height:20px;
+	width:60px;
 	cursor: pointer;
 	background-size:cover;
 	display:inline-block;
+	margin-left:4px;
 }
 
 
@@ -46,11 +52,46 @@ h1 {
 	font-size: 112.5%;
 	cursor: pointer;
 	color: #fff;
-	background-color: #069;
+	background-color: #036;
 }
 
+.centered{
+    margin-left: auto;
+    margin-right: auto;
+}
 
-#word {
+#clue {
+	margin-top:5px;
+	font-size: 20px;
+	}
+	
+#gameOver{	
+	text-align: center;
+	font-family: Tahoma, Geneva, sans-serif;
+	color:#f63;
+	margin-bottom: 2px;
+	font-size: 200%;
+	margin: 0px, auto;
+	
+}
+
+#btnNext{	
+	font-size: 150%;
+	margin: 0px, auto;
+	
+}
+
+.instructions{
+	border-style:solid;
+	border-radius: 10px;
+	background-color: #6c9;
+	padding: 5px;
+}
+
+/*============================================================
+HangMan Formatting
+============================================================*/
+.hangman #word {
 	font-weight: bold;
 	font-size: 200%;
 	letter-spacing: 0.25em;
@@ -62,7 +103,7 @@ h1 {
 	font-family:  Tahoma, "Lucida Console", Monaco,  monospace;
 }
 
-.missedLetter{
+.hangman .missedLetter{
 	color:red;
 }
 
@@ -76,27 +117,13 @@ h1 {
 	font-weight: bold;
 	font-size: 120%;
 	color: #fff;
-	background-color: #006;
+	background-color: #069;
 	float: left;
 	border-radius: 5px;
 	cursor: pointer;
 }
 
-#letters div {
-	width: 15%;
-	height:10%;
 
-	margin: 0 1.6% 1.5% 0;
-	padding-top:3px;
-	padding-bottom:3px;
-	font-weight: bold;
-	font-size: 120%;
-	color: #fff;
-	background-color: #006;
-	float: left;
-	border-radius: 5px;
-	cursor: pointer;
-}
 
 .hangman #letters .row8{/*make space between  bottom row keys smaller*/
 	width: 11%;
@@ -119,40 +146,6 @@ h1 {
 	clear:both;
 }
 
-centeredBlock, .button, #drawing, #letters{
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.arrow-down {
-	width: 0; 
-	height: 0; 
-	border-left: 10px solid transparent;
-	border-right: 10px solid transparent;
-	
-	border-top: 10px solid #f00;
-}
-
-#clue {
-	margin-top:5px;
-	}
-	
-#gameOver{	
-	text-align: center;
-	font-family: Tahoma, Geneva, sans-serif;
-	color:#f44;
-	margin-bottom: 2px;
-	font-size: 200%;
-	margin: 0px, auto;
-	
-}
-
-#btnNext{	
-	font-size: 150%;
-	margin: 0px, auto;
-	
-}
 
 #drawingBackground{
 			height: 300px;
@@ -160,6 +153,7 @@ centeredBlock, .button, #drawing, #letters{
 			background-image: url('../images/clouds.jpg');
 			background-repeat:repeat-y;
 			position:relative;
+			margin: 0 auto;
 }
 
 #para{
@@ -181,7 +175,10 @@ centeredBlock, .button, #drawing, #letters{
 			
 }
 
-#wsGrid {
+/*=========================================
+Word-search game formatting
+===========================================*/
+.wordsearch #grid {
 	font-weight: bold;
 	
 	letter-spacing: 0;
@@ -196,14 +193,14 @@ centeredBlock, .button, #drawing, #letters{
 	
 }
 
-table, tr, td{
+.wordsearch table, tr, td{
 	padding: 0;
 	margin: 0;
 	border-style:none;
 	border-spacing:0;
 	}
 
-.wsSquare{
+.wordsearch .square{
 	display: inline-block;
 	width: 26px;
 	height: 27px;
@@ -222,34 +219,36 @@ table, tr, td{
 	text-transform: uppercase;
 	
 }
-.wsSelectedSquare{
+.wordsearch .selectedSquare{
 	background: url('../images/squares.jpg') -78px -0px no-repeat ! important;
 	color: #333 ! important;
 	
 }
-.wsCorrectSquare{
+.wordsearch .correctSquare{
 	background: url('../images/squares.jpg') -130px -0px no-repeat;
 	color:#FFF;
 }
 
 
-.wsWordFound{
+.wordsearch .wordFound{
 	color:#888;
 	text-decoration:line-through;
 	}
 
-#wsWordsToFind{
+.wordsearch #wordsToFind{
 	text-align: center;
 	margin-left:auto; 
 	margin-right:auto;
 }
 
-#wsWordsToFind td{
+.wordsearch #wordsToFind td{
 	padding: 2px;
 	margin-right: 2px;
 }
 
-
+/*==========================
+Word mix game formatting
+============================*/
 
 .wordmix .letterBtn{
 	width: 35px;
@@ -259,7 +258,7 @@ table, tr, td{
 	font-weight: bold;
 	font-size: 30px;
 	color: #fff;
-	background-color: #3cf;
+	background-color: #069;
 	
 	border-radius: 5px;
 	cursor: pointer;
@@ -277,10 +276,13 @@ margin-right: auto;
 	
 }
 
-.wordmix #word{
-	border:none;
-	
+
+.wordmix #word {
+	padding-top: 8px;
+	padding-bottom: 8px;
 	width: 320px;
+	background-color: #69c;
+	
 }
 
 
@@ -293,47 +295,48 @@ margin-right: auto;
 #letters td{
 	padding:4px;}
 
-.wordmix #word{
-	padding-bottom:5px;
-	padding-top:5px;
-	background-color: #6cf;
-	height:46px;
-}
+
 
 .wordmix #word .letterBtn{
-	width: 33px;
-	margin: 0 1px 0 1px;
+	width: 32px;
+	height:33px;
+	margin-right: 1px;
+	border-width:1px;
+	border-color:#CCC;
+	border-style:solid;
 }
 
 .wordmix #word.wordCorrect{
-	background-color: #0c0;
+	background-color: #393;
 }
 
 .wordmix #word.wordWrong{
-	background-color: #C66;
+	background-color: #c33;
 }
 
 .wordmix #word .letterEmpty {
 	background-color: #fff;
-	width: 31px;
-	height:33px;
-	border-width:1px;
-	border-color:#CCC;
-	border-style:solid;
+
+
 
 }
 
 .wordmix .wordCorrect .letterPlace{
-	background-color: #3c3;
+	background-color: #0c3;
 }
 .wordmix .wordWrong .letterPlace{
 
-	background-color: #c33;
+	background-color: #f30;
+}
+
+.wordmix #image{
+	width:300px;
+	height: 200px;
+	margin: 0 auto;
 }
 
 
-
-
+/*=====================*/
 /*iphone styles go here*/
 @media screen and (max-device-height: 480px){
 #drawingBackground{

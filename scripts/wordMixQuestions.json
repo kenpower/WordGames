@@ -1,11 +1,14 @@
 [	
 	{
 		"clue": "Large grey pachyderm",
-		"answer": "Elephant"
+		"answer": "Elephant",
+		"image":"images//elephant.png"
 	},
 	{
 		"clue": "In latin, means 'terrible lizard'",
-		"answer": "Dinosaur"
+		"answer": "Dinosaur",
+		"image":"images//dinosaur.png"
+		
 	},
 	{
 		"clue": "Capital of France",
@@ -17,11 +20,13 @@
 	},
 	{
 		"clue": "Singer of 'Blue Sude Shoes'",
-		"answer": "Elvis Presley"
+		"answer": "Elvis",
+		"image":"images//elvis.png"
 	},
 	{
 		"clue": "Married Anne Boleyn",
-		"answer": "Henry The Eight"
+		"answer": "Henry",
+		"image":"images//henry.png"
 	},
 	{
 		"clue": "This fish is source of all knowledge",

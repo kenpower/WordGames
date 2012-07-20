@@ -4,15 +4,24 @@
 	
 	$._wordGame={
 		callbacks:{},
-		gameDescriptor:{}
+		gameDescriptor:{},
+		
+		theGame: {},
+		
+		insertTitle: function(title, instText){
+			$._wordGame.theGame.html("<div id='title'><h1>"+title+"</h1><div id='help'></div></div>");
+			
+			$('<p class= "instructions" />').text(instText).appendTo(theGame).hide();
+					
+			$('#title').click(function(){$('.instructions').slideToggle();});
+			$('.instructions').click(function(){$('.instructions').slideToggle();});
+		}
 	},
 	
 	$._wordSearch={
 		
 		gameState:{"dragging":false},
 	
-		instructionsText:"Instructions, blah, blah blah, blah blah, blah ",
-		
 		theGrid:[],
 		
 		initGame: function (theGame) {
@@ -20,23 +29,14 @@
 			$.extend($._wordSearch.gameState,$._wordGame.gameDescriptor);
 			$(theGame).addClass('wordsearch');
 			
+			var instructionsText=
+				"Find the listed words in the grid of letters below. Words may be vertical, horizontal or diagonal";
 			
-			theGame.html("<div id='title'><h1>WordSearch</h1><div id='help'></div></div>");
-			
-					
-			$('<p class= "instructions" />', {
-					text: $._wordSearch.instructionsText
-					
-					}).appendTo(theGame).hide();
-					
-			$('#title').click(function(){$('.instructions').slideToggle();});
-			$('.instructions').click(function(){$('.instructions').slideToggle();});
-			
-			
+			$._wordGame.insertTitle("WordSearch",instructionsText)
 			
 			
 			var words=$._wordGame.gameDescriptor.words;
-			var table =$('<table id="wsWordsToFind">').appendTo(theGame);
+			var table =$('<table id="wordsToFind">').appendTo(theGame);
 			
 			var row;
 			for(i=0;i<words.length;i++){
@@ -106,7 +106,7 @@
 			}
 			
 			$('<table>',{
-				"id" : "wsGrid"
+				"id" : "grid"
 			}).appendTo(theGame);
 			
 			
@@ -127,20 +127,20 @@
 					var cell=$("<td>").appendTo(row);
 					
 					$("<div>",{ 
-						"class":"wsSquare",
+						"class":"square",
 						"text" :c,
 						"data": {x:j,y:i}}).appendTo(cell);
 				}
-				$('#wsGrid').append(row);
+				$('#grid').append(row);
 			}
 			
 			theGame.append("<div id='currentWord'></div>");
 			
 			$._wordSearch.gameState.selectedWord='';
 			
-			$('.wsSquare').click(function(){;});
+			$('.square').click(function(){;});
 			
-			$('.wsSquare').on("touchstart",function(event){
+			$('.square').on("touchstart",function(event){
 				event.preventDefault();
 				event.stopPropagation();
 				$._wordSearch.gameState.dragging=true;
@@ -150,7 +150,7 @@
 				$('#currentWord').html("ts:");			
 				});
 		
-			$('.wsSquare').on("touchmove",function(event){
+			$('.square').on("touchmove",function(event){
 				event.preventDefault();
 				event.stopPropagation();
 				var evt=event.originalEvent;
@@ -163,21 +163,21 @@
 				}
 			});		
 			
-			$('.wsSquare').on("touchend",function(event){		
+			$('.square').on("touchend",function(event){		
 				event.preventDefault();
 				event.stopPropagation();
 				$._wordSearch.gameState.dragging=false;
 				
 				$._wordSearch.computeSelectedSquares();
 				$._wordSearch.checkSelectedWord();
-				$('.wsSelectedSquare').removeClass('wsSelectedSquare');
+				$('.selectedSquare').removeClass('selectedSquare');
 				$('#currentWord').html("mu:"+$._wordSearch.selectedWord);
 				
 			});	
 				
 				
 			
-			$('.wsSquare').mouseenter(function(){
+			$('.square').mouseenter(function(){
 				if($._wordSearch.gameState.dragging){
 					$._wordSearch.gameState.endSq=$(this).data();
 					$._wordSearch.computeSelectedSquares();
@@ -187,7 +187,7 @@
 				
 			
 			
-			$('.wsSquare').mousedown(function(){	
+			$('.square').mousedown(function(){	
 				$._wordSearch.gameState.dragging=true;
 				$._wordSearch.gameState.startSq=$(this).data();
 				$._wordSearch.gameState.endSq=$(this).data();
@@ -195,21 +195,21 @@
 				});
 			
 	
-			$('.wsSquare').mouseup(function(){
+			$('.square').mouseup(function(){
 				$._wordSearch.gameState.dragging=false;
 				
 				$._wordSearch.gameState.endSq=$(this).data();
 				$._wordSearch.computeSelectedSquares();
 				$._wordSearch.checkSelectedWord();
-				$('.wsSelectedSquare').removeClass('wsSelectedSquare');
+				$('.selectedSquare').removeClass('selectedSquare');
 
 				});		
 				
-			$('#wsGrid').mouseleave(function(){
+			$('#grid').mouseleave(function(){
 				$._wordSearch.gameState.dragging=false;
 				$._wordSearch.computeSelectedSquares();
 				$._wordSearch.checkSelectedWord();
-				$('.wsSelectedSquare').removeClass('wsSelectedSquare');
+				$('.selectedSquare').removeClass('selectedSquare');
 
 				});		
 			
@@ -236,13 +236,13 @@
 				
 				});
 			*/	
-			$('body').disableSelection();
+			$('.wordsearch').disableSelection();
 			
 			
 		},
 		
 		computeSelectedSquares: function(){
-			$(".wsSelectedSquare").removeClass('wsSelectedSquare');
+			$(".selectedSquare").removeClass('selectedSquare');
 			var s=$._wordSearch.gameState.startSq;
 			var e=$._wordSearch.gameState.endSq;
 			/*
@@ -313,8 +313,8 @@
 			var words=$._wordGame.gameDescriptor.words;
 			for(w in words){
 					if($._wordSearch.gameState.selectedWord.toUpperCase()==words[w].toUpperCase()){
-						$('.wsSelectedSquare').addClass('wsCorrectSquare');
-						$('.word-'+w).addClass('wsWordFound');
+						$('.selectedSquare').addClass('correctSquare');
+						$('.word-'+w).addClass('wordFound');
 					}
 				}
 				
@@ -323,8 +323,8 @@
 		
 		highlightSquare: function(x,y){
 					idx=$._wordSearch.gridIdx(x,y);
-					$('.wsSquare').eq(idx).addClass("wsSelectedSquare");
-					return $('.wsSquare').eq(idx).html();
+					$('.square').eq(idx).addClass("selectedSquare");
+					return $('.square').eq(idx).html();
 		},
 		
 		gridIdx: function(x,y){
@@ -426,21 +426,13 @@
 			$._hangMan.gameState={};
 			$(theGame).addClass('hangman');
 			$._hangMan.manImageProperties={file:"images/parachutist_small.png",framewidth:89,height:75};
-			$._hangMan.instructionTxt="Hangman is a word-guessing game. The row of dashes indicates the number of letters to be guessed. "+
+			
+			instructionsText="Hangman is a word-guessing game. The row of dashes indicates the number of letters to be guessed. "+
 				"Click or tap a letter. If it's in the word, it replaces the dash(es). Each wrong guess results in a string being broken on the parachute. When all the strings are broken our friend falls to the ground. "+
 				"Your role is to guess the word correctly before the victim meets his grisly fate. ";
 			
 			
-			theGame.html("<div id='title'><h1>HangMan</h1><div id='help'></div></div>");
-			
-					
-			$('<p class= "instructions" />', {
-					text: $._hangMan.instructionTxt
-					
-					}).appendTo(theGame).hide();
-					
-			$('#title').click(function(){$('.instructions').slideToggle();});
-			$('.instructions').click(function(){$('.instructions').slideToggle();});
+			$._wordGame.insertTitle("WordSearch",instructionsText)
 			
 			theGame.append("<div id='drawingBackground'><div id='para'></div>"+
 				"<div id='para_man'></div></div>");
@@ -690,6 +682,16 @@ $._wordMix={ //word mix game methods & state
 		
 		},
 		
+		getImage: function () {
+			
+			var img= $._wordGame.gameDescriptor["image"];
+			if(!img)
+				img="images/default-wordmix.png";
+				
+			return img;
+		
+		},
+		
 		
 		
 		
@@ -700,25 +702,20 @@ $._wordMix={ //word mix game methods & state
 			 
 			$._wordMix.gameState={};
 			
-			$._wordMix.manImageProperties={file:"images/parachutist_small.png",framewidth:89,height:75};
-			$._wordMix.instructionTxt="Hangman is a word-guessing game. The row of dashes indicates the number of letters to be guessed. "+
-				"Click or tap a letter. If it's in the word, it replaces the dash(es). Each wrong guess results in a string being broken on the parachute. When all the strings are broken our friend falls to the ground. "+
-				"Your role is to guess the word correctly before the victim meets his grisly fate. ";
+			$._wordMix.instructionTxt="Wordmix is a word-guessing game. Use the letters below to complete the word which matches the clue. ";
 			
 			
-			theGame.html("<div id='title'><h1>WordMix</h1><div id='help'></div></div>");
+			
 			$(theGame).addClass('wordmix');
 					
-			$('<p class= "instructions" />', {
-					text: $._wordMix.instructionTxt
-					
-					}).appendTo(theGame).hide();
-					
-			$('#title').click(function(){$('.instructions').slideToggle();});
-			$('.instructions').click(function(){$('.instructions').slideToggle();});
+		
+			$._wordGame.insertTitle("WordMix",$._wordMix.instructionTxt);
 			
-			theGame.append("<div id='drawingBackground'><div id='para'></div>"+
-				"<div id='para_man'></div></div>");
+			
+			var img=$._wordMix.getImage();
+			$('<div id= "image" />')
+				.css("background-image","url("+img+")")
+				.appendTo(theGame);
 			
 			$('#gameOver').hide();
 			$('#btnNext').hide();
@@ -1080,10 +1077,7 @@ $._wordMix={ //word mix game methods & state
 	
 	var gameData={"name":params.name,"gameType":params.gameType};
 	
-	
-	
-	
-		$.ajax( //get the question & game
+	$.ajax( //get the question & game
 		{
 				url: 'scripts/getGame.php',
 				dataType: "json",
@@ -1100,6 +1094,7 @@ $._wordMix={ //word mix game methods & state
 	
 		
 	$._wordGame.gameDescriptor=gd||{};
+	$._wordGame.theGame=this;
 	
 	$.extend($._wordGame.callBacks,callbacks||{});
 	
