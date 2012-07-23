@@ -32,24 +32,13 @@
 			var instructionsText=
 				"Find the listed words in the grid of letters below. Words may be vertical, horizontal or diagonal";
 			
-			$._wordGame.insertTitle("WordSearch",instructionsText)
-			
-			
-			var words=$._wordGame.gameDescriptor.words;
-			var table =$('<table id="wordsToFind">').appendTo(theGame);
-			
-			var row;
-			for(i=0;i<words.length;i++){
-				if(i%2==0)
-					row=$('<tr>').appendTo(table);
-				$('<td>',{"text" :words[i].toUpperCase()}).addClass(function(index) {
-  					return "word-" + i;}).appendTo(row);
-			}
+			$._wordGame.insertTitle("WordSearch",instructionsText);
 			
 			
 					
 			//populate the grid
-			gridSize=$._wordSearch.gameState.gridSize=12;
+			var words=$._wordGame.gameDescriptor.words;
+			gridSize=$._wordSearch.gameState.gridSize=10;
 			for(i=0;i<gridSize;i++){
 				$._wordSearch.theGrid[i]=[];
 				for(j=0;j<gridSize;j++){
@@ -71,7 +60,8 @@
 				words[w]=words[w].toUpperCase();
 				var word=words[w];
 				if(word.length>gridSize){
-					$.error( "word too long for grid:"+word);
+					console.log( "word too long for grid(removed):"+word);
+					words[w]='';
 					continue;
 				}
 				
@@ -98,11 +88,19 @@
 				}while(wordPlaced==false && (++dirAttempts)<numDirections); // try all directions until word fits
 				
 				if(!wordPlaced){
-					//$.error( "Unable to place word:"+word);
+					console.log( "Unable to place word:"+word+" sq:"+sq+"d:"+dirAttempts);
+					words[w]='';//mark for deletion
 				}
 				
 				
 				
+			}
+			//delete all empty words
+			for (var i = words.length-1; i >= 0; i--) {
+				if (words[i]=='') {
+					words.splice(i, 1);
+	
+				}
 			}
 			
 			$('<table>',{
@@ -116,6 +114,7 @@
 				"class":"row"});
 				
 				var chars = "abcdefghijklmnopqrstuvwxyz";
+				//var chars = "-";
 	
 				for(j=0;j<gridSize;j++){
 					c=$._wordSearch.theGrid[i][j];
@@ -196,8 +195,8 @@
 			
 	
 			$('.square').mouseup(function(){
+				if($._wordSearch.gameState.dragging==false) return;
 				$._wordSearch.gameState.dragging=false;
-				
 				$._wordSearch.gameState.endSq=$(this).data();
 				$._wordSearch.computeSelectedSquares();
 				$._wordSearch.checkSelectedWord();
@@ -206,6 +205,7 @@
 				});		
 				
 			$('#grid').mouseleave(function(){
+				if($._wordSearch.gameState.dragging==false) return;
 				$._wordSearch.gameState.dragging=false;
 				$._wordSearch.computeSelectedSquares();
 				$._wordSearch.checkSelectedWord();
@@ -237,6 +237,19 @@
 				});
 			*/	
 			$('.wordsearch').disableSelection();
+			
+			$('<div id="wordsToFind">Words to find</div>').appendTo(theGame);
+				
+			var table =$('<table id="wordsToFind">').appendTo(theGame);
+			
+			var row;
+			for(i=0;i<words.length;i++){
+				if(i%2==0)
+					row=$('<tr>').appendTo(table);
+				
+				$('<td>',{"text" :words[i].toUpperCase()}).addClass(function(index) {
+  					return "word-" + i;}).appendTo(row);
+			}
 			
 			
 		},
