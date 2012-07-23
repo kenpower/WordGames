@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!-- saved from url=(0045)http://colorschemedesigner.com/#0841Tw0w0w0w0 -->
+<html lang="en"><!--
+
+*  Color Scheme Designer 3
+
+*  Copyright (c) 2002-2009, Petr Stanicek, pixy@pixy.cz ("the author")
+*  All rights reserved.
+*
+*  Redistribution and use in source and binary forms, with or without
+*  modification, are permitted provided that the following conditions are met:
+*   * Redistributions of source code must retain the above copyright
+*     notice, this list of conditions and the following disclaimer.
+*   * Redistributions in binary form must reproduce the above copyright
+*     notice, this list of conditions and the following disclaimer in the
+*     documentation and/or other materials provided with the distribution.
+*   * Any commercial use of this software is not allowed unless an exemption
+*     was granted by the author.
+*
+*  This software is provided by the author "as is" and any express or implied
+*  warranties, including, but not limited to, the implied warranties or
+*  merchantability and fitness for a particular purpose are disclaimed.
+*  In no event shall the author be liable for any direct, indirect, incidental,
+*  special, exemplary, or consequential damages (including, but not limited to,
+*  procurement of substitute goods or services; loss of use, data, or profits;
+*  or business interruption) however caused and on any theory of liability,
+*  whether in contract, strict liability, or tort (including negligence or
+*  otherwise) arising in any way out of the use of this software, even if
+*  advised of the possibility of such damage.
+
+--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+	<title>Color Scheme Designer 3</title>
+	<meta name="description" content="A designer tool for creating color combinations that work together well.">
+	<meta name="keywords" content="color, scheme, wheel, theory, colorwheel, design, designer, palette, colorset, RYB, webcolors, safecolors, blind, blindness, simulation, protanopy, protanopia, deuteranopy, deuteranopia, tritanopy, tritanopia, daltonism, live, preview, pixy, barvy, barevné, míchátko">
+	<link rel="stylesheet" href="./Color Scheme Designer 3_files/default.css" type="text/css">
+	<script type="text/javascript" async="" src="./Color Scheme Designer 3_files/ga.js"></script><script type="text/javascript" src="./Color Scheme Designer 3_files/jquery-1.4.2.min.js"></script>
+	<script type="text/javascript" src="./Color Scheme Designer 3_files/jquery.styledselect.js"></script>
+	<script type="text/javascript" src="./Color Scheme Designer 3_files/jquery.floatbox.js"></script>
+	<script type="text/javascript" src="./Color Scheme Designer 3_files/jquery.tooltip.js"></script>
+	<script type="text/javascript" src="./Color Scheme Designer 3_files/jquery.droppy.js"></script>
+	<script type="text/javascript" src="./Color Scheme Designer 3_files/jquery.cookie.js"></script>
+	<script type="text/javascript" src="./Color Scheme Designer 3_files/colorschemedesigner.js"></script>
+	<script type="text/javascript" src="./Color Scheme Designer 3_files/tooltips.js"></script>
+
+	<link rel="stylesheet" href="./Color Scheme Designer 3_files/kxs.css" type="text/css">
+	<script type="text/javascript" src="./Color Scheme Designer 3_files/kxs.js"></script>
+
+</head>
+
+<body>
+
+<div id="csd3-jscheck" style="display: none; ">
+	<h1>Color Scheme Designer 3</h1>
+	<div id="csd3-load"><p>Wait please. Loading...</p></div>
+</div>
+
+<script type="text/javascript">
+<!--
+
+var elm = document.getElementById('csd3-load');
+if (elm) elm.innerHTML = '<p>Wait please. Loading...<'+'/p>';
+
+//-->
+</script>
+
+<div id="csd3-canvas" style="">
+
+	<h2>2002–2010 © <a href="http://www.pixy.cz/index-en.html" data-bitly-type="bitly_hover_card">Petr Stanicek</a> • v3.51 • <a class="hilite" href="http://colorschemedesigner.com/blog" data-bitly-type="bitly_hover_card"><strong>Blog &amp; News</strong></a></h2>
+
+	<div id="csd3-model-cover"><table id="csd3-model"><tbody><tr><td><a id="csd3-m1" class="" href="http://colorschemedesigner.com/#" data-bitly-type="bitly_hover_card">mono</a></td><td><a id="csd3-m2" href="http://colorschemedesigner.com/#" data-bitly-type="bitly_hover_card">complement</a></td><td><a id="csd3-m3" href="http://colorschemedesigner.com/#" data-bitly-type="bitly_hover_card" class="">triad</a></td><td><a id="csd3-m4" href="http://colorschemedesigner.com/#" class="sel" data-bitly-type="bitly_hover_card">tetrad</a></td><td><a id="csd3-m5" href="http://colorschemedesigner.com/#" data-bitly-type="bitly_hover_card">analogic</a></td><td><a id="csd3-m6" href="http://colorschemedesigner.com/#" data-bitly-type="bitly_hover_card" class="">accented analogic</a></td></tr></tbody></table></div>
+
+	<div id="csd3-pane-wheel" class="pane" style="display: none; "><div id="csd3-wheel"><div id="csd3-sample" class="bg-pri-0" style="background-color: rgb(255, 51, 0); "></div><div id="csd3-wh1"></div><div id="csd3-wh2"></div><div id="csd3-wh3"></div><div id="csd3-wh4"></div><img class="dot" id="csd3-dot1" src="./Color Scheme Designer 3_files/e.png" style="left: 200px; top: 75px; "><img class="dot" id="csd3-dot2" src="./Color Scheme Designer 3_files/e.png" style="display: block; left: 166px; top: 291px; "><img class="dot" id="csd3-dot3" src="./Color Scheme Designer 3_files/e.png" style="display: block; left: 252px; top: 98px; "><img class="dot" id="csd3-dot4" src="./Color Scheme Designer 3_files/e.png" style="display: block; left: 114px; top: 268px; "><div class="val" id="csd3-hue-val">Hue: <span>9°</span></div><div class="val" id="csd3-hue-compl">opposite</div><div class="val" id="csd3-dist-val" style="display: block; ">Angle: <span>30°</span></div><div class="val" id="csd3-rgb-val">RGB: <span>FF3300</span></div><table id="csd3-rgb-parts"><tbody><tr><th>R:</th><td id="csd3-rgb-r">100 %</td></tr><tr><th>G:</th><td id="csd3-rgb-g">20 %</td></tr><tr><th>B:</th><td id="csd3-rgb-b">0 %</td></tr></tbody></table></div></div>
+
+	<div id="csd3-pane-vars" class="pane" style="display: none; ">
+		<div class="tabs" id="csd3-tabs-csv"><a id="csd3-tab-c1" class="sel" href="http://colorschemedesigner.com/#" data-bitly-type="bitly_hover_card">Palette At Once</a><a id="csd3-tab-c2" href="http://colorschemedesigner.com/#" data-bitly-type="bitly_hover_card">Adjust Variants</a></div>
+		<div id="csd3-c1-cover" style="display: block; "><div id="csd3-saturation-cover"><h4>Scheme<br>Saturation/Brightness</h4><div id="csd3-saturation" style="background-color: rgb(255, 49, 0); "><div class="slider"><img class="dot" id="csd3-dots" src="./Color Scheme Designer 3_files/e.png" style="left: 145.00336000000001px; top: 34.99663999999999px; "></div></div></div><div id="csd3-contrast-cover"><h4>Scheme<br>Contrast</h4><div id="csd3-contrast" class="slider"><img class="dot" id="csd3-dotc" src="./Color Scheme Designer 3_files/e.png" style="left: 89.0168px; top: 90.9832px; "></div></div></div>
+		<div id="csd3-c2-cover"><div id="csd3-manvar-cover"><h4>Selected Variant<br>Saturation/Brightness</h4><div id="csd3-manvar"><div class="slider"><img class="dotv" id="csd3-dotv0" src="./Color Scheme Designer 3_files/e.png"><img class="dotv" id="csd3-dotv1" src="./Color Scheme Designer 3_files/e.png"><img class="dotv" id="csd3-dotv2" src="./Color Scheme Designer 3_files/e.png"><img class="dotv" id="csd3-dotv3" src="./Color Scheme Designer 3_files/e.png"><img class="dotv" id="csd3-dotv4" src="./Color Scheme Designer 3_files/e.png"></div></div><div id="csd3-manvar-list"></div></div></div>
+	<div id="csd3-presets">Preset: <span class="select-replace-cover" style="display: inline-block; position: relative; top: 0px; left: 0px; z-index: 0; vertical-align: middle; text-align: left; width: 280px; "><select style="opacity: 0; visibility: visible; position: absolute; top: 0px; left: 0px; display: inline; z-index: 1; "><option value="">- custom -</option><option value="default" selected="">Default scheme</option><option value="hcontrast1">More Contrast</option><option value="hcontrast2">High Contrast</option><option value="hcontrast3">Max Contrast</option><option value="lcontrast1">Less Contrast</option><option value="lcontrast2">Low Contrast</option><option value="lcontrast3">Min Contrast</option><option value="msatur">Medium Dark (saturated)</option><option value="dsatur">Dark (saturated)</option><option value="vdsatur">Very Dark (saturated)</option><option value="pastel">Pastel</option><option value="mpastel">Medium Dark Pastel</option><option value="dpastel">Dark Pastel</option><option value="vdpastel">Very Dark Pastel</option><option value="palepastel">Light Pale Pastel</option><option value="mpalepastel">Medium Pale Pastel</option><option value="dpalepastel">Dark Pale Pastel</option><option value="vdpalepastel">Very Dark Pale Pastel</option><option value="lgray">Almost Grays (light)</option><option value="lagray">Almost Grays with Color Accents (light)</option><option value="mgray">Almost Grays (medium)</option><option value="magray">Almost Grays with Color Accents (medium)</option><option value="dgray">Almost Grays (dark)</option><option value="dagray">Almost Grays with Color Accents (dark)</option></select><span class="select-replace" style="display: block; white-space: nowrap; ">- custom -</span></span></div></div>
+
+	<div id="csd3-pane-info" class="pane" style="display: block; "><div id="csd3-coltable"><h4>Primary Color:</h4><table class="info-table"><tbody><tr><td class="cbox bg-pri-0" style="background-color: rgb(255, 51, 0); "></td><td class="cbox bg-pri-1" style="background-color: rgb(204, 51, 51); "></td><td class="cbox bg-pri-2" style="background-color: rgb(153, 51, 0); "></td><td class="cbox bg-pri-3" style="background-color: rgb(255, 102, 51); "></td><td class="cbox bg-pri-4" style="background-color: rgb(255, 153, 102); "></td></tr><tr><td class="code">FF3300</td><td class="code">CC3333</td><td class="code">993300</td><td class="code">FF6633</td><td class="code">FF9966</td></tr></tbody></table><h4>Secondary Color A:</h4><table class="info-table"><tbody><tr><td class="cbox bg-sec1-0" style="background-color: rgb(255, 153, 0); "></td><td class="cbox bg-sec1-1" style="background-color: rgb(204, 102, 51); "></td><td class="cbox bg-sec1-2" style="background-color: rgb(153, 102, 0); "></td><td class="cbox bg-sec1-3" style="background-color: rgb(255, 153, 51); "></td><td class="cbox bg-sec1-4" style="background-color: rgb(255, 204, 102); "></td></tr><tr><td class="code">FF9900</td><td class="code">CC6633</td><td class="code">996600</td><td class="code">FF9933</td><td class="code">FFCC66</td></tr></tbody></table><h4>Secondary Color B:</h4><table class="info-table"><tbody><tr><td class="cbox bg-sec2-0" style="background-color: rgb(0, 102, 153); "></td><td class="cbox bg-sec2-1" style="background-color: rgb(51, 102, 102); "></td><td class="cbox bg-sec2-2" style="background-color: rgb(0, 51, 102); "></td><td class="cbox bg-sec2-3" style="background-color: rgb(51, 153, 204); "></td><td class="cbox bg-sec2-4" style="background-color: rgb(102, 153, 204); "></td></tr><tr><td class="code">006699</td><td class="code">336666</td><td class="code">003366</td><td class="code">3399CC</td><td class="code">6699CC</td></tr></tbody></table><h4>Complementary Color:</h4><table class="info-table"><tbody><tr><td class="cbox bg-compl-0" style="background-color: rgb(0, 204, 51); "></td><td class="cbox bg-compl-1" style="background-color: rgb(51, 153, 51); "></td><td class="cbox bg-compl-2" style="background-color: rgb(0, 102, 51); "></td><td class="cbox bg-compl-3" style="background-color: rgb(51, 204, 102); "></td><td class="cbox bg-compl-4" style="background-color: rgb(102, 204, 153); "></td></tr><tr><td class="code">00CC33</td><td class="code">339933</td><td class="code">006633</td><td class="code">33CC66</td><td class="code">66CC99</td></tr></tbody></table></div></div>
+
+	<div class="tabs" id="csd3-tabs-color"><a id="csd3-tab-wheel" href="http://colorschemedesigner.com/#" class="" data-bitly-type="bitly_hover_card">Hues</a><a id="csd3-tab-vars" href="http://colorschemedesigner.com/#" data-bitly-type="bitly_hover_card" class="">Adjust Scheme</a><a id="csd3-tab-info" href="http://colorschemedesigner.com/#" data-bitly-type="bitly_hover_card" class="sel">Color List</a></div>
+
+	<table id="csd3-palette"><tbody><tr>
+		<td class="cbox bg-pri-0" style="background-color: rgb(255, 51, 0); "></td>
+		<td class="cbox bg-sec1-0" style="background-color: rgb(255, 153, 0); "></td>
+		<td class="cbox bg-sec2-0" style="background-color: rgb(0, 102, 153); "></td>
+		<td class="cbox bg-compl-0" style="background-color: rgb(0, 204, 51); "></td>
+	</tr></tbody></table>
+
+	<h4 id="csd3-schemeid">Scheme ID: <a href="http://colorschemedesigner.com/#09c1Tw0w0w0w0" target="_blank" data-bitly-type="bitly_hover_card">09c1Tw0w0w0w0</a></h4>
+
+	<div id="csd3-preview-palette-canvas" class="scheme-m4">
+		<div id="csd3-preview-palette-bg1"></div>
+		<div id="csd3-preview-palette-bg2"></div>	
+		<table id="csd3-preview-palette">
+		<tbody><tr class="pri">
+			<td class="cbox bg-pri-3" rel="pri-3" style="background-color: rgb(255, 102, 51); "></td>
+			<td class="cbox bg-pri-0" rel="pri-0" rowspan="2" style="background-color: rgb(255, 51, 0); "></td>
+			<td class="cbox bg-pri-1" rel="pri-1" style="background-color: rgb(204, 51, 51); "></td>
+		</tr>
+		<tr class="pri">
+			<td class="cbox bg-pri-4" rel="pri-4" style="background-color: rgb(255, 153, 102); "></td>
+			<td class="cbox bg-pri-2" rel="pri-2" style="background-color: rgb(153, 51, 0); "></td>
+		</tr>
+		<tr class="sec sec1">
+			<td class="cbox bg-sec1-1" rel="sec1-1" style="background-color: rgb(204, 102, 51); "></td>
+			<td class="cbox bg-sec1-0" rel="sec1-0" rowspan="2" style="background-color: rgb(255, 153, 0); "></td>
+			<td class="cbox bg-sec1-3" rel="sec1-3" style="background-color: rgb(255, 153, 51); "></td>
+		</tr>
+		<tr class="sec sec1">
+			<td class="cbox bg-sec1-2" rel="sec1-2" style="background-color: rgb(153, 102, 0); "></td>
+			<td class="cbox bg-sec1-4" rel="sec1-4" style="background-color: rgb(255, 204, 102); "></td>
+		</tr>
+		<tr class="sec sec2">
+			<td class="cbox bg-sec2-1" rel="sec2-1" style="background-color: rgb(51, 102, 102); "></td>
+			<td class="cbox bg-sec2-0" rel="sec2-0" rowspan="2" style="background-color: rgb(0, 102, 153); "></td>
+			<td class="cbox bg-sec2-3" rel="sec2-3" style="background-color: rgb(51, 153, 204); "></td>
+		</tr>
+		<tr class="sec sec2">
+			<td class="cbox bg-sec2-2" rel="sec2-2" style="background-color: rgb(0, 51, 102); "></td>
+			<td class="cbox bg-sec2-4" rel="sec2-4" style="background-color: rgb(102, 153, 204); "></td>
+		</tr>
+		<tr class="compl">
+			<td class="cbox bg-compl-1" rel="compl-1" style="background-color: rgb(51, 153, 51); "></td>
+			<td class="cbox bg-compl-0" rel="compl-0" rowspan="2" style="background-color: rgb(0, 204, 51); "></td>
+			<td class="cbox bg-compl-3" rel="compl-3" style="background-color: rgb(51, 204, 102); "></td>
+		</tr>
+		<tr class="compl">
+			<td class="cbox bg-compl-2" rel="compl-2" style="background-color: rgb(0, 102, 51); "></td>
+			<td class="cbox bg-compl-4" rel="compl-4" style="background-color: rgb(102, 204, 153); "></td>
+		</tr>
+
+		</tbody></table>
+
+	</div>
+
+	<div class="tabs" id="csd3-tabs-preview"><a id="csd3-tab-preview0" class="sel" href="http://colorschemedesigner.com/#" data-bitly-type="bitly_hover_card">Preview</a><a id="csd3-tab-preview1" href="http://colorschemedesigner.com/#" data-bitly-type="bitly_hover_card">Light page example</a><a id="csd3-tab-preview2" href="http://colorschemedesigner.com/#" data-bitly-type="bitly_hover_card">Dark page example</a></div>
+
+	<div id="csd3-showtext">
+		<a id="csd3-showtext-btn" href="http://colorschemedesigner.com/#" data-bitly-type="bitly_hover_card">Show sample text</a>
+	</div>
+
+	<ul id="csd3-menu" class="">
+		<li class=""><a href="http://colorschemedesigner.com/#" id="csd3-menu-undo" class="" data-bitly-type="bitly_hover_card">Undo</a></li>
+		<li class=""><a href="http://colorschemedesigner.com/#" id="csd3-menu-redo" class="disabled" data-bitly-type="bitly_hover_card">Redo</a></li>
+		<li class=""><a id="csd3-menu-random" href="http://colorschemedesigner.com/#" data-bitly-type="bitly_hover_card" class="">Random</a>
+			<ul style="z-index: 1028; display: none; ">
+				<li class=""><a href="http://colorschemedesigner.com/#" id="csd3-menu-random-now" data-bitly-type="bitly_hover_card" class="">Randomize Palette</a></li>
+				<li><a href="http://colorschemedesigner.com/#" id="csd3-menu-random-set" data-bitly-type="bitly_hover_card">Randomization Settings…</a></li>
+			</ul>
+		</li>
+		<li class=""><a href="http://colorschemedesigner.com/#" id="csd3-menu-vision" data-bitly-type="bitly_hover_card" class="">Colorblind</a>
+			<ul id="csd3-submenu-vision" style="z-index: 1024; display: none; "><li class=""><a class="vision-cb0 sel" href="http://colorschemedesigner.com/#" rel="0" data-bitly-type="bitly_hover_card">Normal vision (cca 85.5 % of population)</a></li><li class="sep"><hr></li><li class=""><a class="vision-cb1" href="http://colorschemedesigner.com/#" rel="1" data-bitly-type="bitly_hover_card">Protanopy (1 % of men)</a></li><li class=""><a class="vision-cb2" href="http://colorschemedesigner.com/#" rel="2" data-bitly-type="bitly_hover_card">Deuteranopy (1 % of men)</a></li><li class=""><a class="vision-cb3" href="http://colorschemedesigner.com/#" rel="3" data-bitly-type="bitly_hover_card">Tritanopy (cca 0,003 % of population)</a></li><li class=""><a class="vision-cb4" href="http://colorschemedesigner.com/#" rel="4" data-bitly-type="bitly_hover_card">Protanomaly (1 % of men)</a></li><li><a class="vision-cb5" href="http://colorschemedesigner.com/#" rel="5" data-bitly-type="bitly_hover_card">Deuteranomaly (5 % of men, 0.4 % of women)</a></li><li><a class="vision-cb6" href="http://colorschemedesigner.com/#" rel="6" data-bitly-type="bitly_hover_card">Tritanomaly (almost 0 %)</a></li><li><a class="vision-cb7" href="http://colorschemedesigner.com/#" rel="7" data-bitly-type="bitly_hover_card">Full colorblindness (0,005 % of population)</a></li><li><a class="vision-cb8" href="http://colorschemedesigner.com/#" rel="8" data-bitly-type="bitly_hover_card">Atypical monochromatism</a></li></ul>
+		</li>
+		<li class=""><a href="http://colorschemedesigner.com/#" id="csd3-menu-convert" data-bitly-type="bitly_hover_card" class="sel">Color space</a>
+			<ul id="csd3-submenu-convert" style="z-index: 1026; display: none; ">
+				<li class=""><a id="csd3-menu-convert-0" class="" href="http://colorschemedesigner.com/#" data-bitly-type="bitly_hover_card">RGB Colors (default)</a></li>
+				<li class="sep"><hr></li>
+				<li class=""><a id="csd3-menu-convert-1" href="http://colorschemedesigner.com/#" data-bitly-type="bitly_hover_card" class="sel">Web Colors</a></li>
+				<li><a id="csd3-menu-convert-2" href="http://colorschemedesigner.com/#" class="disabled" data-bitly-type="bitly_hover_card">PANTONE™ Colors</a></li>
+				<li><a id="csd3-menu-convert-3" href="http://colorschemedesigner.com/#" class="disabled" data-bitly-type="bitly_hover_card">RAL™ Colors</a></li>
+				<li><a id="csd3-menu-convert-4" href="http://colorschemedesigner.com/#" data-bitly-type="bitly_hover_card">Opaltone® Colors</a></li>
+			</ul>
+		</li>
+		<li class=""><a id="csd3-menu-export" href="http://colorschemedesigner.com/#" data-bitly-type="bitly_hover_card" class="">Export</a>
+			<ul style="z-index: 1006; display: none; ">
+				<li><a id="csd3-menu-export-html" href="http://colorschemedesigner.com/#" data-bitly-type="bitly_hover_card">HTML+CSS…</a></li>
+				<li><a id="csd3-menu-export-xml" href="http://colorschemedesigner.com/#" data-bitly-type="bitly_hover_card">XML…</a></li>
+				<li><a id="csd3-menu-export-txt" href="http://colorschemedesigner.com/#" data-bitly-type="bitly_hover_card">Text…</a></li>
+				<li><a id="csd3-menu-export-aco" href="http://colorschemedesigner.com/#" data-bitly-type="bitly_hover_card">ACO (Photoshop palette)…</a></li>
+				<li><a id="csd3-menu-export-gpl" href="http://colorschemedesigner.com/#" data-bitly-type="bitly_hover_card">GPL (GIMP palette)…</a></li>
+			</ul>
+		</li>
+		<li class=""><a href="http://colorschemedesigner.com/#" id="csd3-menu-help" data-bitly-type="bitly_hover_card" class="">Help</a>
+			<ul style="z-index: 1022; display: none; ">
+				<li class=""><a href="http://colorschemedesigner.com/#" id="csd3-menu-tooltips" data-bitly-type="bitly_hover_card" class="">Show Tooltips</a></li>
+				<li class=""><a href="http://shop.colorschemedesigner.com/" class="link" data-bitly-type="bitly_hover_card">Instant Designer Shop…</a></li>
+				<li class="sep"><hr></li>
+				<li><a href="http://colorschemedesigner.com/previous" id="csd3-menu-about" data-bitly-type="bitly_hover_card">About…</a></li>
+			</ul>
+		</li>
+	</ul>
+
+
+	<form id="csd3-form"><input id="csd3-form-data" type="hidden" name="data"></form>
+
+	<form id="csd3-donate" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+	<input type="hidden" name="cmd" value="_s-xclick">
+	<input type="hidden" name="hosted_button_id" value="3879757">
+	<input type="hidden" name="page_style" value="ColorSchemeDesigner">
+	<input type="image" src="./Color Scheme Designer 3_files/e.png" border="0" class="btn" name="submit" alt="PayPal - The safer, easier way to pay online.">
+	<img alt="" border="0" src="./Color Scheme Designer 3_files/pixel.gif" width="1" height="1">
+	</form>
+
+	<div id="csd3-relatedlinks">
+		Related:
+
+
+<!-- Vistaprint -->
+		<a href="http://www.vistaprint.com/logo-design/add-text.aspx" data-bitly-type="bitly_hover_card">FREE Logo Design</a>
+<!-- // -->
+
+<!-- MagnetStreet -->
+		| <a href="http://www.magnetstreet.com/wedding-invitations" data-bitly-type="bitly_hover_card">Wedding Invitations</a>
+		| <a href="http://www.magnetstreet.com/wedding-save-the-dates" data-bitly-type="bitly_hover_card">Save the Dates</a>
+<!-- // -->
+
+<!-- MM -->
+<!-- 		| <a href="http://www.tophostinglinks.com">best web hosting</a> -->
+<!-- // -->
+
+	</div>
+
+
+<!-- Wix -->
+	<a id="csd3-shoplink2" href="http://www.wix.com/start/matrix?utm_campaign=ma_colorschemedesigner.com&experiment_id=ma_colorschemedesigner.com" data-bitly-type="bitly_hover_card"></a>
+<!-- /2012-03-03 -->
+
+<div id="csd3-vision-warning" title="Vision simulation / color conversion active" style="display: block; "></div></div>
+
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-1465350-3']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+
+
+<div id="csd3-tooltip" style="display: block; left: 690px; right: auto; top: 393px; " class="color"><h3 style="display: none; "></h3><div class="body" style="">#FF9900</div><div class="url" style="display: none; "></div></div></body></html>

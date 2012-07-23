@@ -18,9 +18,25 @@ if($_GET['gameType']=='hangman'){
 }
 
 elseif($_GET['gameType']=='wordsearch'){
-	$arr["clue"]= "Find all the animals";
-	$arr["words"] =array("Elephant","giraffe", "noil","epa","ape","hippopotamus","monkey","Rhinoceros","Snake","leopard");
-	$arr["rightleftlanguage"]=true;
+	//$arr["clue"]= "Find all the animals";
+	//$arr["words"] =array("Elephant","giraffe", "Lion","ape","hippopotamus","monkey","Rhinoceros","Snake","leopard");
+
+	$used_idx=array();
+	
+	$string = file_get_contents("questions.json");
+	$qs=json_decode($string,true);
+	//echo 'Last error: ', json_last_error(), PHP_EOL, PHP_EOL;
+
+	for($i = 0; $i < 4; $i++){
+	
+		do{
+			$idx=rand(0,sizeof($qs)-1);//pick a random question
+		}while(in_array($idx,$used_idx) && sizeof($qs)>sizeof($used_idx)); // make sure it has not been picked already
+		
+		$used_idx[]=$idx;
+		$arr["clues"][]=$qs[$idx]['clue'];
+		$arr["words"][]=$qs[$idx]['answer'];
+	}
 }
 
 

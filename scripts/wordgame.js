@@ -121,6 +121,7 @@
 			
 			var words=$._wordGame.gameDescriptor.words;
 			var clues=$._wordGame.gameDescriptor.clues;
+			
 			gridSize=$._wordSearch.gridState.gridSize=10;
 			
 			//construct & populate the grid with spaces
@@ -190,6 +191,7 @@
 			for (var i = words.length-1; i >= 0; i--) {
 				if (words[i]=='*') {
 					words.splice(i, 1);
+					clues.splice(i,1);
 	
 				}
 			}
@@ -338,16 +340,15 @@
 			
 			
 			//add list of clues to bottom
-			$('<div id="wordsToFind">Words to find</div>').appendTo(theGame);
+			$('<div id="wordsToFind">Find words in the grid which are the answers to these clues</div>').appendTo(theGame);
 				
 			var table =$('<table id="wordsToFind">').appendTo(theGame);
 			
 			var row;
 			for(i=0;i<words.length;i++){
-				if(i%2==0)
-					row=$('<tr>').appendTo(table);
+				row=$('<tr>').appendTo(table);
 				
-				$('<td>',{"text" :words[i].toUpperCase()}).addClass(function(index) {
+				$('<td>',{"text" :clues[i]}).addClass(function(index) {
   					return "word-" + i;}).appendTo(row);
 			}
 			
@@ -410,14 +411,19 @@
 					$._wordSearch.gridState.selectedWord+=ch;
 				}}//dir is diag
 			
+			/* Reverse word in case of 'backwards' selction*/
 			if(xInc==-1 || (xInc==0 && yInc==-1) ){// reverse word in case of bottom -top or right-left selection
 				$._wordSearch.gridState.selectedWord=$._wordSearch.gridState.selectedWord.split("").reverse().join("");
-			}
+			} // this will also reverse r-l-language words because they will have been put in backwards.
 			
 
-			if($._wordGame.gameDescriptor.rightleftlanguage==true){// reverse for right/left languages
-				$._wordSearch.gridState.selectedWord=$._wordSearch.gridState.selectedWord.split("").reverse().join("");
-			};
+			// no need to reverse word based on language direction
+			// right-left language words will be put intpo the grid 'backwards' by default, so their selection
+			// will be reversed automatically be the previous 'reverse word' instruction
+			
+			//if($._wordGame.gameDescriptor.rightleftlanguage==true){// reverse for right/left languages
+			//	$._wordSearch.gridState.selectedWord=$._wordSearch.gridState.selectedWord.split("").reverse().join("");
+			//};
 			
 			
 			$('#currentWord').html($._wordGame.gameState.selectedWord);//debug
