@@ -37,6 +37,9 @@
 			$('#btnQuitConfirm').click(function(){
 					$._wordGame.gameState.quit=true;
 					$._wordGame.recordGameState();
+					if($._wordGame.callBacks.OnGameQuit)
+						$._wordGame.callBacks.OnGameQuit($._wordGame.gameState);
+	
 					$._wordGame.nextGame();
 				});
 				
@@ -47,6 +50,11 @@
 			$._wordGame.gameState.won=win;
 			$._wordGame.recordGameState();
 			
+			if(win==true && $._wordGame.callBacks.OnGameWon)
+					$._wordGame.callBacks.OnGameStart($._wordGame.gameState);
+			if(win==false && $._wordGame.callBacks.OnGameLost)
+					$._wordGame.callBacks.OnGameLost($._wordGame.gameState);
+					
 			$('#quitBtn').hide();
 			if(!msg){
 				msg="You lost the game";
@@ -1071,8 +1079,6 @@ $._wordMix={ //word mix game methods & state
 			$._wordGame.gameState.onGoing=false;
 			//$._wordMix.showResult();
 			
-			$._wordGame.gameState=$._wordGame.gameState;
-			
 			$._wordGame.gameOver($._wordGame.gameState.won);
 			
 /*			var msg="";
@@ -1182,7 +1188,7 @@ $._wordMix={ //word mix game methods & state
 	
 	if(gameType && jQuery.inArray(gameType,gameTypes)>=0){
 		if($._wordGame.callBacks.OnGameStart)
-					$._wordGame.callBacks.OnGameStart();
+					$._wordGame.callBacks.OnGameStart(gd);
 		switch(gameType){
 			case "hangman":
 				$._hangMan.initHangmanGame(this);

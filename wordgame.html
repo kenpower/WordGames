@@ -16,7 +16,8 @@
 		OnGameWon:myGameWon,
 		OnGameStart:myGameStart,
 		OnGameLost:myGameLost,
-		OnGameContinue:myGameContinue
+		OnGameQuit:myGameQuit
+		
 	};
 	
      $(document).ready(function(){
@@ -48,9 +49,9 @@
 		console.log("number of bad guesses: "+gs.badGuesses);
 	 }
 	 
-	 function myGameContinue(gs){
-		console.log("Game Continued!");
-		//$("#theGame").wordGame(myJsonGameDescriptor,mycallBacks);	 //restart the game       	
+	 function myGameQuit(gs){
+		console.log("Game Quit!");
+		
 	 }
 	 
 	 
