@@ -251,24 +251,23 @@ Word-search game formatting
 	text-align: center;
 	margin-left:auto; 
 	margin-right:auto;
-	border-spacing:2px;
+	border-spacing:5px;
 	border-collapse:separate;
 }
 
 .wordsearch div#wordsToFind{
 	font-size: 16px;
-	font-weight:bold;
+	font-weight:normal;
 
 }
 
 .wordsearch #wordsToFind td{
-	padding: 2px;
+	padding: 5px;
 	margin: 2px;
 	font-size: 16px;
 	line-height:16px;
 	
 	border-radius: 5px;
-	border: 1px dashed #999;
 	width:250px;
 	color: #fff;
 	background-color:#960;

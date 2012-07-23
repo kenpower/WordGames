@@ -23,7 +23,7 @@ elseif($_GET['gameType']=='wordsearch'){
 
 	$used_idx=array();
 	
-	$string = file_get_contents("questions.json");
+	$string = file_get_contents("wordMixQuestions.json");
 	$qs=json_decode($string,true);
 	//echo 'Last error: ', json_last_error(), PHP_EOL, PHP_EOL;
 
