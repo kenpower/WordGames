@@ -5,6 +5,7 @@
 	$._wordGame={
 		callbacks:{},
 		gameDescriptor:{},
+		gameState:{},
 		
 		theGame: {},
 		
@@ -15,18 +16,79 @@
 					
 			$('#title').click(function(){$('.instructions').slideToggle();});
 			$('.instructions').click(function(){$('.instructions').slideToggle();});
+		},
+		
+		insertQuitButton: function(){
+			
+			
+			$('<button id="quitBtn"/>').text('Exit Game').appendTo(theGame);
+			$('<div id="quitConfirm">Are you sure you want to quit this game?<button id="btnQuitCancel">Cancel</button><button id="btnQuitConfirm">QUIT</button></div>').hide().appendTo(theGame);
+					
+			$('#quitBtn').click(function(){
+				$('#quitBtn').hide();
+				$('#quitConfirm').show("fast");
+				});
+			
+			$('#btnQuitCancel').click(function(){
+				$('#quitConfirm').hide();
+				$('#quitBtn').show("fast");
+				});
+				
+			$('#btnQuitConfirm').click(function(){
+					$._wordGame.gameState.quit=true;
+					$._wordGame.recordGameState();
+					$._wordGame.nextGame();
+				});
+				
+				
+		},
+		
+		gameOver: function(win,msg){
+			$._wordGame.gameState.won=win;
+			$._wordGame.recordGameState();
+			
+			$('#quitBtn').hide();
+			if(!msg){
+				msg="You lost the game";
+				if(win==true){
+					msg="You won the game!";
+				}
+			}
+			$._wordGame.theGame.append("<div id='gameOver'></div>"+
+				"<div class='nextButton'><button id='btnNext'>Continue...</button></div>");
+			
+			$('#btnNext').click(function(){
+				$._wordGame.nextGame();
+				
+				});
+			
+			$('#gameOver').html(msg).show("slow");
+			
+	
+		},
+		
+		recordGameState: function(){
+			if($._wordGame.gameDescriptor.saveScript)
+			$.getJSON($._wordGame.gameDescriptor.saveScript, $._wordGame.gameState);
+		},
+		
+		nextGame:function(){// called when a game is over (win/lose or quit) loads follow on game
+			 //reload this page (play again)
+			 window.location.reload();		
 		}
+		
+		
 	},
 	
 	$._wordSearch={
 		
-		gameState:{"dragging":false},
+		gridState:{"dragging":false},
 	
 		theGrid:[],
 		
 		initGame: function (theGame) {
 			
-			$.extend($._wordSearch.gameState,$._wordGame.gameDescriptor);
+			
 			$(theGame).addClass('wordsearch');
 			
 			var instructionsText=
@@ -38,7 +100,7 @@
 					
 			//populate the grid
 			var words=$._wordGame.gameDescriptor.words;
-			gridSize=$._wordSearch.gameState.gridSize=10;
+			gridSize=$._wordSearch.gridState.gridSize=10;
 			for(i=0;i<gridSize;i++){
 				$._wordSearch.theGrid[i]=[];
 				for(j=0;j<gridSize;j++){
@@ -103,6 +165,12 @@
 				}
 			}
 			
+			//create a array to record which words are found (init to false)
+			$._wordGame.gameState.wordsFound=[];
+			for(w in words){
+				$._wordGame.gameState.wordsFound.push(false);
+			}
+			
 			$('<table>',{
 				"id" : "grid"
 			}).appendTo(theGame);
@@ -113,8 +181,8 @@
 				var row=$('<tr>',{
 				"class":"row"});
 				
-				var chars = "abcdefghijklmnopqrstuvwxyz";
-				//var chars = "-";
+				//var chars = "abcdefghijklmnopqrstuvwxyz";
+				var chars = "-";
 	
 				for(j=0;j<gridSize;j++){
 					c=$._wordSearch.theGrid[i][j];
@@ -135,16 +203,16 @@
 			
 			theGame.append("<div id='currentWord'></div>");
 			
-			$._wordSearch.gameState.selectedWord='';
+			$._wordSearch.gridState.selectedWord='';
 			
 			$('.square').click(function(){;});
 			
 			$('.square').on("touchstart",function(event){
 				event.preventDefault();
 				event.stopPropagation();
-				$._wordSearch.gameState.dragging=true;
-				$._wordSearch.gameState.startSq=$(event.target).data();
-				$._wordSearch.gameState.endSq=$._wordSearch.gameState.startSq;
+				$._wordSearch.gridState.dragging=true;
+				$._wordSearch.gridState.startSq=$(event.target).data();
+				$._wordSearch.gridState.endSq=$._wordSearch.gameState.startSq;
 				$._wordSearch.computeSelectedSquares();	
 				$('#currentWord').html("ts:");			
 				});
@@ -155,8 +223,8 @@
 				var evt=event.originalEvent;
 				var elem = document.elementFromPoint(evt.pageX, evt.pageY);
 				//$('#currentWord').html("te:"+evt.pageX+";"+evt.pageY+$(elem).html());	
-				if($._wordSearch.gameState.dragging){
-					$._wordSearch.gameState.endSq=$(elem).data();
+				if($._wordSearch.gridState.dragging){
+					$._wordSearch.gridState.endSq=$(elem).data();
 					$._wordSearch.computeSelectedSquares();
 					
 				}
@@ -165,7 +233,7 @@
 			$('.square').on("touchend",function(event){		
 				event.preventDefault();
 				event.stopPropagation();
-				$._wordSearch.gameState.dragging=false;
+				$._wordSearch.gridState.dragging=false;
 				
 				$._wordSearch.computeSelectedSquares();
 				$._wordSearch.checkSelectedWord();
@@ -177,8 +245,8 @@
 				
 			
 			$('.square').mouseenter(function(){
-				if($._wordSearch.gameState.dragging){
-					$._wordSearch.gameState.endSq=$(this).data();
+				if($._wordSearch.gridState.dragging){
+					$._wordSearch.gridState.endSq=$(this).data();
 					$._wordSearch.computeSelectedSquares();
 					
 					}
@@ -187,17 +255,17 @@
 			
 			
 			$('.square').mousedown(function(){	
-				$._wordSearch.gameState.dragging=true;
-				$._wordSearch.gameState.startSq=$(this).data();
-				$._wordSearch.gameState.endSq=$(this).data();
+				$._wordSearch.gridState.dragging=true;
+				$._wordSearch.gridState.startSq=$(this).data();
+				$._wordSearch.gridState.endSq=$(this).data();
 				$._wordSearch.computeSelectedSquares();
 				});
 			
 	
 			$('.square').mouseup(function(){
-				if($._wordSearch.gameState.dragging==false) return;
-				$._wordSearch.gameState.dragging=false;
-				$._wordSearch.gameState.endSq=$(this).data();
+				if($._wordSearch.gridState.dragging==false) return;
+				$._wordSearch.gridState.dragging=false;
+				$._wordSearch.gridState.endSq=$(this).data();
 				$._wordSearch.computeSelectedSquares();
 				$._wordSearch.checkSelectedWord();
 				$('.selectedSquare').removeClass('selectedSquare');
@@ -205,8 +273,8 @@
 				});		
 				
 			$('#grid').mouseleave(function(){
-				if($._wordSearch.gameState.dragging==false) return;
-				$._wordSearch.gameState.dragging=false;
+				if($._wordSearch.gridState.dragging==false) return;
+				$._wordSearch.gridState.dragging=false;
 				$._wordSearch.computeSelectedSquares();
 				$._wordSearch.checkSelectedWord();
 				$('.selectedSquare').removeClass('selectedSquare');
@@ -252,12 +320,14 @@
 			}
 			
 			
+			$._wordGame.insertQuitButton();
+			
 		},
 		
 		computeSelectedSquares: function(){
 			$(".selectedSquare").removeClass('selectedSquare');
-			var s=$._wordSearch.gameState.startSq;
-			var e=$._wordSearch.gameState.endSq;
+			var s=$._wordSearch.gridState.startSq;
+			var e=$._wordSearch.gridState.endSq;
 			/*
 			if(s.x>e.x){
 				e=$._wordSearch.gameState.startSq;
@@ -274,7 +344,7 @@
 
 			
 				
-			$._wordSearch.gameState.selectedWord='';
+			$._wordSearch.gridState.selectedWord='';
 			var sqW=Math.abs(e.x-s.x);
 			var sqH=Math.abs(e.y-s.y);
 			
@@ -292,28 +362,28 @@
 				
 				for(i=s.x,c=0;c<=sqW;c++,i+=xInc){
 					ch=$._wordSearch.highlightSquare(i,s.y);
-					$._wordSearch.gameState.selectedWord+=ch;
+					$._wordSearch.gridState.selectedWord+=ch;
 				}
 			}
 			else if(slope>2){
 
 				for(j=s.y,c=0;c<=sqH;c++,j+=yInc){
 					ch=$._wordSearch.highlightSquare(s.x,j);
-					$._wordSearch.gameState.selectedWord+=ch;
+					$._wordSearch.gridState.selectedWord+=ch;
 					
 				
 				}// dir is vert
 			}
 			else{
 				var dMax=Math.max(sqW,sqH);// max length of diagonal word
-				gridSize=$._wordSearch.gameState.gridSize;
+				gridSize=$._wordSearch.gridState.gridSize;
 				for(i=s.x,j=s.y,c=0;c<=dMax && i >=0 && j>=0 && i<gridSize && j< gridSize;i+=xInc,j+=yInc,c++){
 					ch=$._wordSearch.highlightSquare(i,j);
-					$._wordSearch.gameState.selectedWord+=ch;
+					$._wordSearch.gridState.selectedWord+=ch;
 				}}//dir is diag
 			
 			if(xInc==-1 || (xInc==0 && yInc==-1) ){
-				$._wordSearch.gameState.selectedWord=$._wordSearch.gameState.selectedWord.split("").reverse().join("");
+				$._wordSearch.gridState.selectedWord=$._wordSearch.gridState.selectedWord.split("").reverse().join("");
 			}
 			//$('#currentWord').html($._wordSearch.gameState.selectedWord);
 			
@@ -325,11 +395,25 @@
 		checkSelectedWord: function(){
 			var words=$._wordGame.gameDescriptor.words;
 			for(w in words){
-					if($._wordSearch.gameState.selectedWord.toUpperCase()==words[w].toUpperCase()){
+					if($._wordSearch.gridState.selectedWord.toUpperCase()==words[w].toUpperCase()){
+						$._wordGame.gameState.wordsFound[w]=true;
 						$('.selectedSquare').addClass('correctSquare');
 						$('.word-'+w).addClass('wordFound');
 					}
 				}
+			
+			//check for winning condition
+			var won =true;
+			for(i in $._wordGame.gameState.wordsFound){
+				if($._wordGame.gameState.wordsFound[i]==false){
+					won=false;
+					break;
+				}
+			}
+			
+			if(won==true){
+				$._wordGame.gameOver(true,"You found all the words");
+			}
 				
 			
 		},
@@ -342,7 +426,7 @@
 		
 		gridIdx: function(x,y){
 		
-			return idx=$._wordSearch.gameState.gridSize* y + x;
+			return idx=$._wordSearch.gridState.gridSize* y + x;
 		},
 		
 		sqXY: function(sq,width){// get x & y coords of a square number in a box of width
@@ -354,7 +438,7 @@
 		
 		fitWordHoriz: function(word,pos){
 			wl=word.length;
-			if((wl+pos.x) > $._wordSearch.gameState.gridSize)
+			if((wl+pos.x) > $._wordSearch.gridState.gridSize)
 				return false;
 			for(i=0;i<wl;i++){
 				var gridC=$._wordSearch.theGrid[pos.x+i][pos.y];
@@ -372,7 +456,7 @@
 		
 		fitWordVert: function(word,pos){
 			wl=word.length;
-			if((wl+pos.y) >$._wordSearch.gameState.gridSize)
+			if((wl+pos.y) >$._wordSearch.gridState.gridSize)
 				return false;
 			for(i=0;i<wl;i++){
 				var gridC=$._wordSearch.theGrid[pos.x][pos.y+i];;
@@ -390,7 +474,7 @@
 		
 		fitWordDiag: function(word,pos){
 			wl=word.length;
-			if((wl+pos.x) > $._wordSearch.gameState.gridSize ||(wl+pos.y) >$._wordSearch.gameState.gridSize )
+			if((wl+pos.x) > $._wordSearch.gridState.gridSize ||(wl+pos.y) >$._wordSearch.gridState.gridSize )
 				return false;
 			for(i=0;i<wl;i++){
 				var gridC=$._wordSearch.theGrid[pos.x+i][pos.y+i];
@@ -436,7 +520,7 @@
 			
 			//$('meta[name="viewport"]').attr('content', 'width=' +300 + ', user-scalable:no');
 			 
-			$._hangMan.gameState={};
+	
 			$(theGame).addClass('hangman');
 			$._hangMan.manImageProperties={file:"images/parachutist_small.png",framewidth:89,height:75};
 			
@@ -445,7 +529,7 @@
 				"Your role is to guess the word correctly before the victim meets his grisly fate. ";
 			
 			
-			$._wordGame.insertTitle("WordSearch",instructionsText)
+			$._wordGame.insertTitle("HangMan",instructionsText)
 			
 			theGame.append("<div id='drawingBackground'><div id='para'></div>"+
 				"<div id='para_man'></div></div>");
@@ -456,51 +540,39 @@
 			theGame.append("<div id='clue'></div>");
 			theGame.append("<div id='word'>Word</div>");
 			theGame.append("<div id='letters'>Letters</div>");
-			theGame.append("<div id='gameOver'></div>"+
-				"<div class='nextButton'><button id='btnNext'>Continue...</button></div>");
-			$('#gameOver').hide();
-			$('#btnNext').hide();
-			
-			//$('#drawingBackground').spStop();
 			
 			$('#drawingBackground').pan({fps: 30, speed: 1, dir: 'up'});
 			
-			
-	
-			
 			$._hangMan.newHangmanGame();
 			$._hangMan.upDateImage();
-			if($._hangMan.callBacks.OnGameStart)
-					$._hangMan.callBacks.OnGameStart($._hangMan.gameState);
-	
+			
+			$._wordGame.insertQuitButton();
 			
 		},
 		
 		
 		newHangmanGame: function () {
-			$('#quit').show();
+	
 			$('#letters').show();
 			$('#word').show();
-			$('#gameOver').hide();
-			$('#btnNext').hide();
-			
 		
-			$._hangMan.gameState=new Object();
-			$.extend($._hangMan.gameState,$._wordGame.gameDescriptor);
-			$._hangMan.gameState.badGuesses=0;		   
-			$._hangMan.gameState.correctGuesses = 0;
-			$._hangMan.gameState.wordToGuess = $._hangMan.getHangmanWord().toLowerCase();
-			$._hangMan.gameState.wordLength = $._hangMan.gameState.wordToGuess.length;
-			$._hangMan.gameState.usedLetters="";
-			$._hangMan.gameState.letterstoGuess=$._hangMan.gameState.wordLength;
+		
+			$._wordGame.gameState=new Object();
+			$.extend($._wordGame.gameState,$._wordGame.gameDescriptor);
+			$._wordGame.gameState.badGuesses=0;		   
+			$._wordGame.gameState.correctGuesses = 0;
+			$._wordGame.gameState.wordToGuess = $._hangMan.getHangmanWord().toLowerCase();
+			$._wordGame.gameState.wordLength = $._wordGame.gameState.wordToGuess.length;
+			$._wordGame.gameState.usedLetters="";
+			$._wordGame.gameState.letterstoGuess=$._wordGame.gameState.wordLength;
 			
 			$("#clue").html("Clue: "+$._hangMan.getHangmanClue());
 			
 			// create row of underscores the same length as letters to guess
 			var placeholders = '';
 		
-			for (var i = 0; i < $._hangMan.gameState.wordLength; i++) {
-				var c= $._hangMan.gameState.wordToGuess.charAt(i); //use charAt fror ie6,7
+			for (var i = 0; i < $._wordGame.gameState.wordLength; i++) {
+				var c= $._wordGame.gameState.wordToGuess.charAt(i); //use charAt fror ie6,7
 				if(c>='a' && c<='z'){
 					placeholders += '_';
 				}
@@ -534,14 +606,14 @@
 				$._hangMan.letterTried(String.fromCharCode(event.which).toUpperCase());
 				});
 				
-			$._hangMan.gameState.onGoing=true;
+			$._wordGame.gameState.onGoing=true;
 		
 			
 		},
 		
 		letterTried: function (letter) {
 			
-			if(!$._hangMan.gameState.onGoing) return;
+			if(!$._wordGame.gameState.onGoing) return;
 			
 			//check if char is alphabetic
 			var re = /^([a-zA-Z])$/;
@@ -550,8 +622,8 @@
 				return; //not apha, ignore
 			}
 			
-			if($._hangMan.gameState.usedLetters.search(letter)==-1){
-				$._hangMan.gameState.usedLetters+=letter;
+			if($._wordGame.gameState.usedLetters.search(letter)==-1){
+				$._wordGame.gameState.usedLetters+=letter;
 				buttonID="#letterButton"+letter;
 				//$(buttonID).fadeTo("quick",0.15);
 				$(buttonID).addClass("letterDisabled");
@@ -566,23 +638,23 @@
 		   // split the placeholders into an array
 		   placeholders = placeholders.split('');
 		   // loop through the array
-		   for (var i = 0; i < $._hangMan.gameState.wordLength; i++) {
+		   for (var i = 0; i < $._wordGame.gameState.wordLength; i++) {
 			  // if the selected letter matches one in the word to guess,
 			  // replace the underscore and increase the number of correct guesses
-			  if ($._hangMan.gameState.wordToGuess.charAt(i).toUpperCase() == letter.toUpperCase()) {
+			  if ($._wordGame.gameState.wordToGuess.charAt(i).toUpperCase() == letter.toUpperCase()) {
 				 placeholders[i] = letter;
 				 wrongGuess = false;
-				$._hangMan.gameState.letterstoGuess--;
+				$._wordGame.gameState.letterstoGuess--;
 				
 				 
 				 
 			  }
 		   }
 		   if(wrongGuess===false){
-			   $._hangMan.gameState.correctGuesses++;
+			   $._wordGame.gameState.correctGuesses++;
 		   }else{
-			   $._hangMan.gameState.badGuesses++;
-			   $('#drawingBackground').spSpeed($._hangMan.gameState.badGuesses+1); 
+			   $._wordGame.gameState.badGuesses++;
+			   $('#drawingBackground').spSpeed($._wordGame.gameState.badGuesses+1); 
 		   }
 		   // if the guess was incorrect, increment the number of bad
 		   // guesses and redraw the canvas
@@ -597,41 +669,39 @@
 		   
 		   
 		   //check for wining condition
-		   if($._hangMan.gameState.letterstoGuess===0){
-				$._hangMan.gameState.won=true;
+		   if($._wordGame.gameState.letterstoGuess===0){
+				$._wordGame.gameState.won=true;
 				$._hangMan.gameOver();
 		   }
 		   
-		   if($._hangMan.gameState.badGuesses >=7){
-				$._hangMan.gameState.lose=true;
+		   if($._wordGame.gameState.badGuesses >=7){
+				$._wordGame.gameState.lose=true;
 				$._hangMan.gameOver()
 		   }
 		 
 		},
 		
-		gameContinue: function(){
+		/*gameContinue: function(){
 			if($._hangMan.callBacks.OnGameContinue)
-					$._hangMan.callBacks.OnGameContinue($._hangMan.gameState);
+					$._hangMan.callBacks.OnGameContinue($._wordGame.gameState);
 					
 			 window.location.reload();			
-		},
+		},*/
 		
 		gameOver: function (){
-			$._hangMan.gameState.onGoing=false;
-			$._hangMan.showResult();
+			$._wordGame.gameState.onGoing=false;
+			$._hangMan.showResult(); //show unsolved letters in red
 			var msg="";
+			$._wordGame.gameState=$._wordGame.gameState;
 			
-			if($._hangMan.gameState.won===true){
-				if($._hangMan.callBacks.OnGameWon)
-					$._hangMan.callBacks.OnGameWon($._hangMan.gameState);
-	
-
+			if($._wordGame.gameState.won===true){
 				msg="Well done! You found the word.";
+				$._wordGame.gameOver(true,msg);
 				
 				
 			}
 	
-			if($._hangMan.gameState.lose===true){
+			if($._wordGame.gameState.lose===true){
 				$('#para').fadeOut("slow");
 				$('#para_man').animate({
 					opacity: 0.0,
@@ -640,19 +710,19 @@
 					2000
 					);
 				msg="Hard luck! You didn't find the word.";
-				if($._hangMan.callBacks.OnGameLost)
-					$._hangMan.callBacks.OnGameLost($._hangMan.gameState);
+				
+				$._wordGame.gameOver(false,msg);
 			}
 			
 			//save gamestate
-			$.getJSON( $._hangMan.gameState.saveScript, $._hangMan.gameState); 
+			//$.getJSON( $._wordGame.gameState.saveScript, $._wordGame.gameState); 
 			
 			$('#drawingBackground').spSpeed(0); 
 
 			$('#letters').hide();
 			
-			$('#gameOver').html(msg).show("slow");
-			$('#btnNext').show("slow").click($._hangMan.gameContinue);
+			//$('#gameOver').html(msg).show("slow");
+			//$('#btnNext').show("slow").click($._hangMan.gameContinue);
 			
 			
 		},
@@ -666,7 +736,7 @@
 			placeholders = placeholders.split('');
 			for (i = 0; i < placeholders.length; i++) {
 				if (placeholders[i] == '_') {
-				placeholders[i] = '<span class="missedLetter">' + $._hangMan.gameState.wordToGuess.charAt(i).toUpperCase() + '</span>';
+				placeholders[i] = '<span class="missedLetter">' + $._wordGame.gameState.wordToGuess.charAt(i).toUpperCase() + '</span>';
 				}
 			}
 			word.innerHTML = placeholders.join('');
@@ -674,7 +744,7 @@
 		
 		upDateImage: function (){
 			var numStrings=7;
-			var s=$._hangMan.gameState.badGuesses+1;
+			var s=$._wordGame.gameState.badGuesses+1;
 			$('#para').spState(s);
 		}
 	};
@@ -713,7 +783,7 @@ $._wordMix={ //word mix game methods & state
 			
 			//$('meta[name="viewport"]').attr('content', 'width=' +300 + ', user-scalable:no');
 			 
-			$._wordMix.gameState={};
+		
 			
 			$._wordMix.instructionTxt="Wordmix is a word-guessing game. Use the letters below to complete the word which matches the clue. ";
 			
@@ -730,24 +800,17 @@ $._wordMix={ //word mix game methods & state
 				.css("background-image","url("+img+")")
 				.appendTo(theGame);
 			
-			$('#gameOver').hide();
-			$('#btnNext').hide();
-		
+			
 			theGame.append("<div id='clue'></div>");
 			theGame.append("<div id='word'></div>");
 			theGame.append("<div id='letters'>Letters</div>");
-			theGame.append("<div id='gameOver'></div>"+
-				"<div class='nextButton'><button id='btnNext'>Continue...</button></div>");
-			$('#gameOver').hide();
-			$('#btnNext').hide();
-			
 			
 			$._wordMix.newGame();
 			//$._wordMix.upDateImage();
 			
 			//if($._wordMix.callBacks.OnGameStart)
-					//$._wordMix.callBacks.OnGameStart($._wordMix.gameState);
-	
+					//$._wordMix.callBacks.OnGameStart($._wordGame.gameState);
+			$._wordGame.insertQuitButton();
 			
 		},
 		
@@ -763,16 +826,16 @@ $._wordMix={ //word mix game methods & state
 			$('#btnNext').hide();*/
 			
 		
-			$._wordMix.gameState=new Object();
-			$.extend($._wordMix.gameState,$._wordGame.gameDescriptor);
-			$._wordMix.gameState.MAX_LENGTH=9;		
-			$._wordMix.gameState.LETTERS_TO_SELECT=12;
-			$._wordMix.gameState.badGuesses=0;		   
-			$._wordMix.gameState.correctGuesses = 0;
-			$._wordMix.gameState.wordToGuess = $._wordMix.getWord().toUpperCase();
-			$._wordMix.gameState.wordLength = $._wordMix.gameState.wordToGuess.length;
-			$._wordMix.gameState.usedLetters="";
-			$._wordMix.gameState.letterstoGuess=$._wordMix.gameState.wordLength;
+			$._wordGame.gameState=new Object();
+			$.extend($._wordGame.gameState,$._wordGame.gameDescriptor);
+			$._wordGame.gameState.MAX_LENGTH=9;		
+			$._wordGame.gameState.LETTERS_TO_SELECT=12;
+			$._wordGame.gameState.badGuesses=0;		   
+			$._wordGame.gameState.correctGuesses = 0;
+			$._wordGame.gameState.wordToGuess = $._wordMix.getWord().toUpperCase();
+			$._wordGame.gameState.wordLength = $._wordGame.gameState.wordToGuess.length;
+			$._wordGame.gameState.usedLetters="";
+			$._wordGame.gameState.letterstoGuess=$._wordGame.gameState.wordLength;
 			
 			$("#clue").html("Clue: "+$._wordMix.getClue());
 			
@@ -782,22 +845,22 @@ $._wordMix={ //word mix game methods & state
 			var lettercount=0;
 		
 			//strip out all non alphas and clip to max length
-			for (var i = 0; i < $._wordMix.gameState.wordLength; i++) {
-				var c= $._wordMix.gameState.wordToGuess.charAt(i); //use charAt fror ie6,7
-				if(c>='A' && c<='Z' && lettercount <$._wordMix.gameState.MAX_LENGTH){
+			for (var i = 0; i < $._wordGame.gameState.wordLength; i++) {
+				var c= $._wordGame.gameState.wordToGuess.charAt(i); //use charAt fror ie6,7
+				if(c>='A' && c<='Z' && lettercount <$._wordGame.gameState.MAX_LENGTH){
 					placeholders += c;
 					letters+=c;
 					lettercount++
 				}
 			}
 			
-			$._wordMix.gameState.wordToGuess=placeholders;
-			$._wordMix.gameState.wordLength=$._wordMix.gameState.wordToGuess.length;
+			$._wordGame.gameState.wordToGuess=placeholders;
+			$._wordGame.gameState.wordLength=$._wordGame.gameState.wordToGuess.length;
 			
 			var ttable1=$('<table/>').appendTo('#word');
 			var trow1=$('<tr/>').appendTo(ttable1);
 			 
-			for (var i = 0; i < $._wordMix.gameState.wordLength; i++) {
+			for (var i = 0; i < $._wordGame.gameState.wordLength; i++) {
 				var tcell1=$('<td/>').appendTo(trow1);
 				$('<div/>', {
 					click: function(){$._wordMix.removeLetter($(this))},
@@ -813,7 +876,7 @@ $._wordMix={ //word mix game methods & state
 			
 			// fill remianing slots in letters array with random characters
 			var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-			for(i=letters.length;i<$._wordMix.gameState.LETTERS_TO_SELECT;i++){
+			for(i=letters.length;i<$._wordGame.gameState.LETTERS_TO_SELECT;i++){
 				
 				do{// only add letters not already in set
 					var rnum = Math.floor(Math.random() * chars.length);
@@ -861,14 +924,15 @@ $._wordMix={ //word mix game methods & state
 				$._wordMix.letterTried(String.fromCharCode(event.which).toUpperCase());
 				});*/
 				
-			$._wordMix.gameState.onGoing=true;
+			$._wordGame.gameState.onGoing=true;
+			
 		
 			
 		},
 		
 		letterTried: function (letter,btnID) {
 			btnID='#'+btnID;
-			if(!$._wordMix.gameState.onGoing) return;
+			if(!$._wordGame.gameState.onGoing) return;
 			
 			//check if char is alphabetic
 			var re = /^([a-zA-Z])$/;
@@ -883,7 +947,7 @@ $._wordMix={ //word mix game methods & state
 			    return; // button disabled ignore
 			
 			
-			$._wordMix.gameState.usedLetters+=letter;
+			$._wordGame.gameState.usedLetters+=letter;
 				
 			
 			if($._wordMix.addLetter(letter,btnID)) // if letter gets added, disable this one
@@ -915,9 +979,9 @@ $._wordMix={ //word mix game methods & state
 					word+=$(this).html()
 					});
 			
-			if($._wordMix.gameState.wordToGuess===word){
+			if($._wordGame.gameState.wordToGuess===word){
 				$('#word').addClass("wordCorrect");
-				$._wordMix.gameState.won=true;
+				$._wordGame.gameState.won=true;
 				$._wordMix.gameOver();
 				
 		   	}
@@ -949,6 +1013,7 @@ $._wordMix={ //word mix game methods & state
 			
 		},
 		
+		/*
 		checkLetter: function (letter) {
 		   var placeholders = $('#word').html(),
 		   		wrongGuess = true;
@@ -956,22 +1021,22 @@ $._wordMix={ //word mix game methods & state
 		   // split the placeholders into an array
 		   placeholders = placeholders.split('');
 		   // loop through the array
-		   for (var i = 0; i < $._wordMix.gameState.wordLength; i++) {
+		   for (var i = 0; i < $._wordGame.gameState.wordLength; i++) {
 			  // if the selected letter matches one in the word to guess,
 			  // replace the underscore and increase the number of correct guesses
-			  if ($._wordMix.gameState.wordToGuess.charAt(i).toUpperCase() == letter.toUpperCase()) {
+			  if ($._wordGame.gameState.wordToGuess.charAt(i).toUpperCase() == letter.toUpperCase()) {
 				 placeholders[i] = letter;
 				 wrongGuess = false;
-				$._wordMix.gameState.letterstoGuess--;
+				$._wordGame.gameState.letterstoGuess--;
 				
 				 
 				 
 			  }
 		   }
 		   if(wrongGuess===false){
-			   $._wordMix.gameState.correctGuesses++;
+			   $._wordGame.gameState.correctGuesses++;
 		   }else{
-			   $._wordMix.gameState.badGuesses++;
+			   $._wordGame.gameState.badGuesses++;
 			   
 		   }
 		   // if the guess was incorrect, increment the number of bad
@@ -987,33 +1052,34 @@ $._wordMix={ //word mix game methods & state
 		   
 		   
 		   //check for wining condition
-		   if($._wordMix.gameState.letterstoGuess===0){
-				$._wordMix.gameState.won=true;
+		   if($._wordGame.gameState.letterstoGuess===0){
+				$._wordGame.gameState.won=true;
 				$._wordMix.gameOver();
 		   }
 		   
-		   if($._wordMix.gameState.badGuesses >=7){
-				$._wordMix.gameState.lose=true;
-				$._wordMix.gameOver()
+		   if($._wordGame.gameState.badGuesses >=7){
+				$._wordGame.gameState.lose=true;
+				$._wordMix.gameOver();
 		   }
 		 
 		},
 		
-		gameContinue: function(){
-			if($._wordMix.callBacks.OnGameContinue)
-					$._wordMix.callBacks.OnGameContinue($._wordMix.gameState);
-					
-			 window.location.reload();			
-		},
+		*/
+	
 		
 		gameOver: function (){
-			$._wordMix.gameState.onGoing=false;
-			$._wordMix.showResult();
-			var msg="";
+			$._wordGame.gameState.onGoing=false;
+			//$._wordMix.showResult();
 			
-			if($._wordMix.gameState.won===true){
+			$._wordGame.gameState=$._wordGame.gameState;
+			
+			$._wordGame.gameOver($._wordGame.gameState.won);
+			
+/*			var msg="";
+			
+			if($._wordGame.gameState.won===true){
 				if($._wordMix.callBacks.OnGameWon)
-					$._wordMix.callBacks.OnGameWon($._wordMix.gameState);
+					$._wordMix.callBacks.OnGameWon($._wordGame.gameState);
 	
 
 				msg="Well done! You found the word.";
@@ -1021,7 +1087,7 @@ $._wordMix={ //word mix game methods & state
 				
 			}
 	
-			if($._wordMix.gameState.lose===true){
+			if($._wordGame.gameState.lose===true){
 				$('#para').fadeOut("slow");
 				$('#para_man').animate({
 					opacity: 0.0,
@@ -1031,11 +1097,11 @@ $._wordMix={ //word mix game methods & state
 					);
 				msg="Hard luck! You didn't find the word.";
 				if($._wordMix.callBacks.OnGameLost)
-					$._wordMix.callBacks.OnGameLost($._wordMix.gameState);
+					$._wordMix.callBacks.OnGameLost($._wordGame.gameState);
 			}
 			
 			//save gamestate
-			$.getJSON( $._wordMix.gameState.saveScript, $._wordMix.gameState); 
+			$.getJSON( $._wordGame.gameState.saveScript, $._wordGame.gameState); 
 			
 			
 
@@ -1043,20 +1109,20 @@ $._wordMix={ //word mix game methods & state
 			
 			$('#gameOver').html(msg).show("slow");
 			$('#btnNext').show("slow").click($._wordMix.gameContinue);
-			
+			*/
 			
 		},
 		
 
 		
-
+		/*
 		// When the game is over, display missing letters in red
 		showResult: function () {
 			var placeholders = word.innerHTML;
 			placeholders = placeholders.split('');
 			for (i = 0; i < placeholders.length; i++) {
 				if (placeholders[i] == '_') {
-				placeholders[i] = '<span class="missedLetter">' + $._wordMix.gameState.wordToGuess.charAt(i).toUpperCase() + '</span>';
+				placeholders[i] = '<span class="missedLetter">' + $._wordGame.gameState.wordToGuess.charAt(i).toUpperCase() + '</span>';
 				}
 			}
 			word.innerHTML = placeholders.join('');
@@ -1064,9 +1130,10 @@ $._wordMix={ //word mix game methods & state
 		
 		upDateImage: function (){
 			var numStrings=7;
-			var s=$._wordMix.gameState.badGuesses+1;
+			var s=$._wordGame.gameState.badGuesses+1;
 			$('#para').spState(s);
 		}
+		*/
 	};
 	
   $.fn.wordGame = function(callbacks) {
@@ -1108,12 +1175,14 @@ $._wordMix={ //word mix game methods & state
 		
 	$._wordGame.gameDescriptor=gd||{};
 	$._wordGame.theGame=this;
-	
-	$.extend($._wordGame.callBacks,callbacks||{});
+	$._wordGame.callBacks=callbacks||{};
 	
 	var gameType= gd["gametype"];
 	
+	
 	if(gameType && jQuery.inArray(gameType,gameTypes)>=0){
+		if($._wordGame.callBacks.OnGameStart)
+					$._wordGame.callBacks.OnGameStart();
 		switch(gameType){
 			case "hangman":
 				$._hangMan.initHangmanGame(this);
@@ -1127,7 +1196,7 @@ $._wordMix={ //word mix game methods & state
 		}
 	}
 	else{
-		$.error( "Unknown Gametype:"+gameType);
+		$.console.log( "Unknown Gametype:"+gameType);
 	}
 	
 	return this;

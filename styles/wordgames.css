@@ -43,8 +43,7 @@ h1 {
 
 
 
-#play, #quit {
-	
+button {
 	width: 140px;
 	padding: 0.25em 0;
 	text-align: center;
@@ -53,6 +52,20 @@ h1 {
 	cursor: pointer;
 	color: #fff;
 	background-color: #036;
+}
+
+button#quitBtn {
+	
+	margin-top: 20px;
+	text-align: center;
+
+	cursor: pointer;
+	color: #fff;
+	background-color: #930;
+}
+
+button#btnQuitCancel{
+	background-color: #063;
 }
 
 .centered{
@@ -65,7 +78,7 @@ h1 {
 	font-size: 20px;
 	}
 	
-#gameOver{	
+#gameOver, div.#quitConfirm{	
 	text-align: center;
 	font-family: Tahoma, Geneva, sans-serif;
 	color:#f63;
