@@ -2,13 +2,17 @@
 
 (function( $ ){
 	
+	
+	/* the wordGame object contains data and method which are common to all the wordgames*/
 	$._wordGame={
-		callbacks:{},
-		gameDescriptor:{},
-		gameState:{},
+		callbacks:{}, //list of external functions to be called on variuos game events
+		gameDescriptor:{}, //information required to setup game
+		gameState:{}, //state of game at any time
 		
-		theGame: {},
+		theGame: {}, //element (div) containg game
 		
+		
+		//title creation and help behaviour
 		insertTitle: function(title, instText){
 			$._wordGame.theGame.html("<div id='title'><h1>"+title+"</h1><div id='help'></div></div>");
 			
@@ -18,8 +22,8 @@
 			$('.instructions').click(function(){$('.instructions').slideToggle();});
 		},
 		
-		insertQuitButton: function(){
-			
+		// create quit button and quit dialog behaviour
+		insertQuitButton: function(){	
 			
 			$('<button id="quitBtn"/>').text('Exit Game').appendTo(theGame);
 			$('<div id="quitConfirm">Are you sure you want to quit this game?<button id="btnQuitCancel">Cancel</button><button id="btnQuitConfirm">QUIT</button></div>').hide().appendTo(theGame);
@@ -46,12 +50,13 @@
 				
 		},
 		
+		//game over message and behaviour
 		gameOver: function(win,msg){
 			$._wordGame.gameState.won=win;
 			$._wordGame.recordGameState();
 			
 			if(win==true && $._wordGame.callBacks.OnGameWon)
-					$._wordGame.callBacks.OnGameStart($._wordGame.gameState);
+					$._wordGame.callBacks.OnGameWon($._wordGame.gameState);
 			if(win==false && $._wordGame.callBacks.OnGameLost)
 					$._wordGame.callBacks.OnGameLost($._wordGame.gameState);
 					
@@ -75,6 +80,7 @@
 	
 		},
 		
+		//write game state to a file
 		recordGameState: function(){
 			if($._wordGame.gameDescriptor.saveScript)
 			$.getJSON($._wordGame.gameDescriptor.saveScript, $._wordGame.gameState);
@@ -88,27 +94,35 @@
 		
 	},
 	
+	//=======================================================================
+	//Word Search Game
+	//=======================================================================
+	//User is given a square (10x10) grid of seemingly random letters
+	//User is given a  number of clues
+	//user must find and select the answers to the clues in the grid
+	//answers can be  horizontal or vertical or diagonal
+	//=======================================================================
 	$._wordSearch={
 		
-		gridState:{"dragging":false},
+		gridState:{"dragging":false}, //for mouse control
 	
-		theGrid:[],
+		theGrid:[],// main 2d array of letters for game
 		
 		initGame: function (theGame) {
-			
 			
 			$(theGame).addClass('wordsearch');
 			
 			var instructionsText=
 				"Find the listed words in the grid of letters below. Words may be vertical, horizontal or diagonal";
-			
 			$._wordGame.insertTitle("WordSearch",instructionsText);
 			
 			
 					
-			//populate the grid
+			
 			var words=$._wordGame.gameDescriptor.words;
 			gridSize=$._wordSearch.gridState.gridSize=10;
+			
+			//construct & populate the grid with spaces
 			for(i=0;i<gridSize;i++){
 				$._wordSearch.theGrid[i]=[];
 				for(j=0;j<gridSize;j++){
@@ -117,21 +131,25 @@
 				}
 			}
 			
-			var fitFuncs=[$._wordSearch.fitWordHoriz,$._wordSearch.fitWordVert,$._wordSearch.fitWordDiag]; // these are the3 directions for fitting words
+			var fitFuncs=[$._wordSearch.fitWordHoriz,$._wordSearch.fitWordVert,$._wordSearch.fitWordDiag]; 
+			// these are the function &  directions for fitting words
+			//we'll pick a function from this array later to fit a word in the grid
 			
 
 			
 			var numSqs=gridSize*gridSize;
 			
 			var numDirections=fitFuncs.length;
-			var direction=Math.floor(Math.random()*numDirections); //pick one of horiz/vert,diag to start. Put it here so the each word is attempted to be placed in a different direction
+			
+			var direction=Math.floor(Math.random()*numDirections); 
+			//pick one of horiz/vert,diag to start. Put it here so the each word is attempted to be placed in a different direction
 			
 			for(w in words){
 				words[w]=words[w].toUpperCase();
 				var word=words[w];
 				if(word.length>gridSize){
 					console.log( "word too long for grid(removed):"+word);
-					words[w]='';
+					words[w]='*';
 					continue;
 				}
 				
@@ -140,7 +158,7 @@
 				var sq=Math.floor(Math.random()*numSqs); //pick a random square to start trying to fit word
 				
 
-				var dirAttempts=0; //track how many different directions we've attempted
+				var dirAttempts=0; //track how many different directions we've attempted (diag, horiz & vert)
 				do{
 					
 					var sqAttempts=0;
@@ -158,16 +176,18 @@
 				}while(wordPlaced==false && (++dirAttempts)<numDirections); // try all directions until word fits
 				
 				if(!wordPlaced){
+					//we've tried all squares and all directions of each square and still cound't fit word
 					console.log( "Unable to place word:"+word+" sq:"+sq+"d:"+dirAttempts);
-					words[w]='';//mark for deletion
+					words[w]='*';//mark for deletion
 				}
 				
 				
 				
 			}
-			//delete all empty words
+			
+			//delete all that coldn't fit
 			for (var i = words.length-1; i >= 0; i--) {
-				if (words[i]=='') {
+				if (words[i]=='*') {
 					words.splice(i, 1);
 	
 				}
@@ -179,22 +199,24 @@
 				$._wordGame.gameState.wordsFound.push(false);
 			}
 			
+			//create the main grid for the game
 			$('<table>',{
 				"id" : "grid"
 			}).appendTo(theGame);
 			
 			
 				
+			//populate the grid with fitted letters
 			for(i=0;i<gridSize;i++){
 				var row=$('<tr>',{
 				"class":"row"});
 				
 				//var chars = "abcdefghijklmnopqrstuvwxyz";
-				var chars = "-";
+				var chars = "-"; //for debug
 	
 				for(j=0;j<gridSize;j++){
 					c=$._wordSearch.theGrid[i][j];
-					if(c==' '){
+					if(c==' '){ // unfilled grid slots get a random char
 						var rnum = Math.floor(Math.random() * chars.length);
 						c=$._wordSearch.theGrid[i][j]=chars.substring(rnum,rnum+1);
 					}
@@ -204,17 +226,18 @@
 					$("<div>",{ 
 						"class":"square",
 						"text" :c,
-						"data": {x:j,y:i}}).appendTo(cell);
+						"data": {x:j,y:i}}).appendTo(cell);// grid slot
 				}
 				$('#grid').append(row);
 			}
 			
-			theGame.append("<div id='currentWord'></div>");
+			theGame.append("<div id='currentWord'>test</div>");//debug
 			
 			$._wordSearch.gridState.selectedWord='';
 			
-			$('.square').click(function(){;});
+			$('.square').click(function(){;}); //debug
 			
+			//
 			$('.square').on("touchstart",function(event){
 				event.preventDefault();
 				event.stopPropagation();
@@ -222,7 +245,7 @@
 				$._wordSearch.gridState.startSq=$(event.target).data();
 				$._wordSearch.gridState.endSq=$._wordSearch.gameState.startSq;
 				$._wordSearch.computeSelectedSquares();	
-				$('#currentWord').html("ts:");			
+				$('#currentWord').html("ts:");	//debug		
 				});
 		
 			$('.square').on("touchmove",function(event){
@@ -250,36 +273,34 @@
 				
 			});	
 				
-				
-			
-			$('.square').mouseenter(function(){
-				if($._wordSearch.gridState.dragging){
-					$._wordSearch.gridState.endSq=$(this).data();
-					$._wordSearch.computeSelectedSquares();
-					
-					}
-				});
-				
-			
-			
+			//start selecting letters
 			$('.square').mousedown(function(){	
 				$._wordSearch.gridState.dragging=true;
 				$._wordSearch.gridState.startSq=$(this).data();
 				$._wordSearch.gridState.endSq=$(this).data();
-				$._wordSearch.computeSelectedSquares();
+				$._wordSearch.computeSelectedSquares();//this will highlight the selected squares
 				});
-			
+		
+			//if we drag into a new square
+			$('.square').mouseenter(function(){
+				if($._wordSearch.gridState.dragging){
+					$._wordSearch.gridState.endSq=$(this).data();
+					$._wordSearch.computeSelectedSquares();
+					}
+				});
 	
+			//end selection
 			$('.square').mouseup(function(){
 				if($._wordSearch.gridState.dragging==false) return;
 				$._wordSearch.gridState.dragging=false;
 				$._wordSearch.gridState.endSq=$(this).data();
-				$._wordSearch.computeSelectedSquares();
-				$._wordSearch.checkSelectedWord();
-				$('.selectedSquare').removeClass('selectedSquare');
+				$._wordSearch.computeSelectedSquares(); //this will highlight the selected squares
+				$._wordSearch.checkSelectedWord(); //check if the word is in the list & higlight as correct
+				$('.selectedSquare').removeClass('selectedSquare');// unselect selected squares
 
 				});		
 				
+			// if mouse drags of the grid, treat as selection ended
 			$('#grid').mouseleave(function(){
 				if($._wordSearch.gridState.dragging==false) return;
 				$._wordSearch.gridState.dragging=false;
@@ -312,8 +333,10 @@
 				
 				});
 			*/	
-			$('.wordsearch').disableSelection();
+			$('.wordsearch').disableSelection();//don't want mouse drags to do default browser selection
 			
+			
+			//add list of clues to bottom
 			$('<div id="wordsToFind">Words to find</div>').appendTo(theGame);
 				
 			var table =$('<table id="wordsToFind">').appendTo(theGame);
@@ -327,70 +350,66 @@
   					return "word-" + i;}).appendTo(row);
 			}
 			
-			
+			//quitbutton
 			$._wordGame.insertQuitButton();
 			
 		},
 		
+		//select sqyaues based on mouse start and end dragging
+		//also figure out word selected
 		computeSelectedSquares: function(){
+			//deselect currently selected squares
 			$(".selectedSquare").removeClass('selectedSquare');
 			var s=$._wordSearch.gridState.startSq;
 			var e=$._wordSearch.gridState.endSq;
-			/*
-			if(s.x>e.x){
-				e=$._wordSearch.gameState.startSq;
-				s=$._wordSearch.gameState.endSq;
-			}
-			if(s.x==e.x && s.y>e.y){
-				e=$._wordSearch.gameState.startSq;
-				s=$._wordSearch.gameState.endSq;
-			}*/
+
 			
 			var xInc=0;
 			var yInc=0;
 			
-
-			
-				
 			$._wordSearch.gridState.selectedWord='';
-			var sqW=Math.abs(e.x-s.x);
+			
+			var sqW=Math.abs(e.x-s.x); // width and height of rectangle encloseing start and end
 			var sqH=Math.abs(e.y-s.y);
 			
+			//slope of dragging gesture use to determin horiz/vert or diag selection
+			var slope=sqW==0 ? Number.MAX_VALUE : sqH/sqW ;
 			
-			var slope=sqW==0 ? Number.MAX_VALUE :sqH/sqW;
-			
-			if(s.x<e.x) xInc=1;
-			if(s.x>e.x) xInc=-1;
-			if(s.y<e.y) yInc=1;
-			if(s.y>e.y) yInc=-1;
+			if(s.x<e.x) xInc=1; //slection goes left to right
+			if(s.x>e.x) xInc=-1;//right to left
+			if(s.y<e.y) yInc=1;//bottom to top
+			if(s.y>e.y) yInc=-1;// top to bottom
 
 	
 			
 			if(slope<0.5){// dir is horiz
 				
-				for(i=s.x,c=0;c<=sqW;c++,i+=xInc){
+				for(i=s.x,c=0;c<=sqW;c++,i+=xInc){ //select a row
 					ch=$._wordSearch.highlightSquare(i,s.y);
 					$._wordSearch.gridState.selectedWord+=ch;
 				}
 			}
-			else if(slope>2){
+			else if(slope>2){// dir is vert
 
-				for(j=s.y,c=0;c<=sqH;c++,j+=yInc){
+				for(j=s.y,c=0;c<=sqH;c++,j+=yInc){// select a column
 					ch=$._wordSearch.highlightSquare(s.x,j);
 					$._wordSearch.gridState.selectedWord+=ch;
 					
 				
-				}// dir is vert
+				}
 			}
 			else{
 				var dMax=Math.max(sqW,sqH);// max length of diagonal word
 				gridSize=$._wordSearch.gridState.gridSize;
-				for(i=s.x,j=s.y,c=0;c<=dMax && i >=0 && j>=0 && i<gridSize && j< gridSize;i+=xInc,j+=yInc,c++){
+				for(i=s.x,j=s.y,c=0;
+					c<=dMax &&  
+					i >=0 && j>=0 && i<gridSize && j< gridSize; // make sure selection stays inside grid
+					i+=xInc,j+=yInc,c++){
 					ch=$._wordSearch.highlightSquare(i,j);
 					$._wordSearch.gridState.selectedWord+=ch;
 				}}//dir is diag
 			
-			if(xInc==-1 || (xInc==0 && yInc==-1) ){
+			if(xInc==-1 || (xInc==0 && yInc==-1) ){// reverse word in case of bottom -top or right-left selection
 				$._wordSearch.gridState.selectedWord=$._wordSearch.gridState.selectedWord.split("").reverse().join("");
 			}
 			//$('#currentWord').html($._wordSearch.gameState.selectedWord);
@@ -400,13 +419,15 @@
 			
 		},
 		
+		//check select word in list of words
+		//mark as found
 		checkSelectedWord: function(){
 			var words=$._wordGame.gameDescriptor.words;
 			for(w in words){
 					if($._wordSearch.gridState.selectedWord.toUpperCase()==words[w].toUpperCase()){
-						$._wordGame.gameState.wordsFound[w]=true;
-						$('.selectedSquare').addClass('correctSquare');
-						$('.word-'+w).addClass('wordFound');
+						$._wordGame.gameState.wordsFound[w]=true;// mark as found in array of bools
+						$('.selectedSquare').addClass('correctSquare'); // highlight
+						$('.word-'+w).addClass('wordFound'); // strike throug clue
 					}
 				}
 			
@@ -419,7 +440,7 @@
 				}
 			}
 			
-			if(won==true){
+			if(won==true){ // all words found
 				$._wordGame.gameOver(true,"You found all the words");
 			}
 				
@@ -427,12 +448,12 @@
 		},
 		
 		highlightSquare: function(x,y){
-					idx=$._wordSearch.gridIdx(x,y);
+					idx=$._wordSearch.gridIdx(x,y);// convert 2d grid coords into 1d index of all squares
 					$('.square').eq(idx).addClass("selectedSquare");
-					return $('.square').eq(idx).html();
+					return $('.square').eq(idx).html(); //return letter in square
 		},
 		
-		gridIdx: function(x,y){
+		gridIdx: function(x,y){// convert 2d grid coords into 1d index of all squares
 		
 			return idx=$._wordSearch.gridState.gridSize* y + x;
 		},
@@ -444,11 +465,11 @@
 			return pos;
 		},
 		
-		fitWordHoriz: function(word,pos){
+		fitWordHoriz: function(word,pos){ // try to put word horisontaly in to partially filled grid at position pos
 			wl=word.length;
 			if((wl+pos.x) > $._wordSearch.gridState.gridSize)
-				return false;
-			for(i=0;i<wl;i++){
+				return false; // word too long to fit
+			for(i=0;i<wl;i++){ //check if putting word into grid will not clash with previous words
 				var gridC=$._wordSearch.theGrid[pos.x+i][pos.y];
 				if(!(gridC==' ' || gridC==word.charAt(i)))
 					return false;
@@ -462,7 +483,7 @@
 			
 		},
 		
-		fitWordVert: function(word,pos){
+		fitWordVert: function(word,pos){//same logic as fitWordHoriz
 			wl=word.length;
 			if((wl+pos.y) >$._wordSearch.gridState.gridSize)
 				return false;
@@ -480,7 +501,7 @@
 			
 		},
 		
-		fitWordDiag: function(word,pos){
+		fitWordDiag: function(word,pos){//same logic as fitWordHoriz
 			wl=word.length;
 			if((wl+pos.x) > $._wordSearch.gridState.gridSize ||(wl+pos.y) >$._wordSearch.gridState.gridSize )
 				return false;
