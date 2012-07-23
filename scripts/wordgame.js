@@ -120,6 +120,7 @@
 					
 			
 			var words=$._wordGame.gameDescriptor.words;
+			var clues=$._wordGame.gameDescriptor.clues;
 			gridSize=$._wordSearch.gridState.gridSize=10;
 			
 			//construct & populate the grid with spaces
@@ -412,7 +413,14 @@
 			if(xInc==-1 || (xInc==0 && yInc==-1) ){// reverse word in case of bottom -top or right-left selection
 				$._wordSearch.gridState.selectedWord=$._wordSearch.gridState.selectedWord.split("").reverse().join("");
 			}
-			//$('#currentWord').html($._wordSearch.gameState.selectedWord);
+			
+
+			if($._wordGame.gameDescriptor.rightleftlanguage==true){// reverse for right/left languages
+				$._wordSearch.gridState.selectedWord=$._wordSearch.gridState.selectedWord.split("").reverse().join("");
+			};
+			
+			
+			$('#currentWord').html($._wordGame.gameState.selectedWord);//debug
 			
 			
 			

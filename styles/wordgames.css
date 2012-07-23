@@ -240,7 +240,7 @@ Word-search game formatting
 	
 }
 .wordsearch .correctSquare{
-	background: url('../images/squares_10.jpg') -155px -0px no-repeat ! important;
+	background: url('../images/squares_10.jpg') -155px -0px no-repeat ;
 	/*background: url('../images/squares.jpg') -130px -0px no-repeat;*/
 	color:#FFF;
 }

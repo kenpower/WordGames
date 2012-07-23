@@ -1,7 +1,7 @@
 <?php
 
 $arr =array("gametype"=>$_GET['gameType'],
-	"saveScript"=>'http://glasnost.itcarlow.ie/~powerk/wordgames/scripts/getGame.php',	
+	"saveScript"=>'save.php',	
 	"saveFile"=>"newgameData.txt", 
 	"uniqueToken"=> uniqid('',true), 
 	"user"=>$_GET['name']);
@@ -19,7 +19,8 @@ if($_GET['gameType']=='hangman'){
 
 elseif($_GET['gameType']=='wordsearch'){
 	$arr["clue"]= "Find all the animals";
-	$arr["words"] =array("Elephant","giraffe", "lion","ape","hippopotamus","monkey","Rhinoceros","Snake","leopard");
+	$arr["words"] =array("Elephant","giraffe", "noil","epa","ape","hippopotamus","monkey","Rhinoceros","Snake","leopard");
+	$arr["rightleftlanguage"]=true;
 }
 
 
@@ -32,6 +33,7 @@ elseif($_GET['gameType']=='wordmix'){
 	$arr["clue"]=$qs[$idx]['clue'];
 	$arr["answer"]=$qs[$idx]['answer'];
 	$arr["image"]=$qs[$idx]['image'];
+	
 
 }
 
