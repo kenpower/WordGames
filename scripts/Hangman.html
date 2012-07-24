@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<!-- saved from url=(0061)http://localhost/hangman/wordgame.html?name=&gameType=wordmix -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<title>Hangman</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" type="text/css" href="./Hangman_files/wordgames.css">
+
+<script type="text/javascript" src="./Hangman_files/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="./Hangman_files/jquery.spritely-0.6.1.js"></script>
+<script type="text/javascript" src="./Hangman_files/wordgame.js"></script>
+<script>
+
+	var mycallBacks={ //list my game event handlers (optional)
+		OnGameWon:myGameWon,
+		OnGameStart:myGameStart,
+		OnGameLost:myGameLost,
+		OnGameQuit:myGameQuit
+		
+	};
+	
+     $(document).ready(function(){
+		
+		$("#theGame").wordGame(mycallBacks);
+	 });
+		
+		// specify a div to contain the game
+ 			        	
+       		  
+
+	 
+	 
+	 //these are my 'event handlers', these are optional
+	 //each handler can take a javascript object representing the state of the game (gs)
+	 //
+	 function myGameWon(gs){
+		console.log("Game Won!");
+		console.log(gs);
+	 }
+	 
+	 function myGameStart(gs){
+		console.log("Game Started!");
+		console.log(gs);
+	 }  
+	 
+	 function myGameLost(gs){
+		console.log("Game Lost!");
+		console.log("number of bad guesses: "+gs.badGuesses);
+	 }
+	 
+	 function myGameQuit(gs){
+		console.log("Game Quit!");
+		
+	 }
+	 
+	 
+	 
+   </script>
+</head>
+
+<body>
+
+<div id="theGame" class="wordmix"><div id="title"><h1>WordMix</h1><div id="help"></div></div><p class="instructions" style="display: none; ">Wordmix is a word-guessing game. Use the letters below to complete the word which matches the clue. </p><div id="image" style="background-image: url(http://localhost/hangman/images//elvis.png); "></div><div id="clue">Clue: Singer of 'Blue Sude Shoes'</div><div id="word"><table><tbody><tr><td><div id="letter0" class="letterPlace letterEmpty letterBtn">?</div></td><td><div id="letter1" class="letterPlace letterEmpty letterBtn">?</div></td><td><div id="letter2" class="letterPlace letterEmpty letterBtn">?</div></td><td><div id="letter3" class="letterPlace letterEmpty letterBtn">?</div></td><td><div id="letter4" class="letterPlace letterEmpty letterBtn">?</div></td></tr></tbody></table></div><div id="letters"><table><tbody><tr><td><div id="letterButton0" class="letterBtn">V</div></td><td><div id="letterButton1" class="letterBtn">S</div></td><td><div id="letterButton2" class="letterBtn">T</div></td><td><div id="letterButton3" class="letterBtn">Y</div></td><td><div id="letterButton4" class="letterBtn">R</div></td><td><div id="letterButton5" class="letterBtn">C</div></td></tr><tr><td><div id="letterButton6" class="letterBtn">U</div></td><td><div id="letterButton7" class="letterBtn">K</div></td><td><div id="letterButton8" class="letterBtn">I</div></td><td><div id="letterButton9" class="letterBtn">E</div></td><td><div id="letterButton10" class="letterBtn">N</div></td><td><div id="letterButton11" class="letterBtn">L</div></td></tr></tbody></table></div><button id="quitBtn">Exit Game</button><div id="quitConfirm" style="display: none; ">Are you sure you want to quit this game?<button id="btnQuitCancel">Cancel</button><button id="btnQuitConfirm">QUIT</button></div></div>
+
+
+
+</body></html>
