@@ -133,7 +133,7 @@ button#btnQuitCancel{
 .dialog {
 	 position: fixed;
 	 
-     bottom:50%;
+     top:100px;
      width:300px;
      margin: 100px auto;
      background-color: #fff;

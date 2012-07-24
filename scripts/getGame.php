@@ -1,10 +1,10 @@
 <?php
 
 $arr =array("gametype"=>$_GET['gameType'],
-	"saveScript"=>'save.php',	
-	"saveFile"=>"newgameData.txt", 
-	"uniqueToken"=> uniqid('',true), 
-	"user"=>$_GET['name']);
+	'saveScript'=>'scripts//save.php',	
+	'saveFile'=>'gameData1.txt', 
+	'uniqueToken'=> uniqid('',true), 
+	'user'=>$_GET['name']);
 
 if($_GET['gameType']=='hangman'){
 	$string = file_get_contents("questions.json");

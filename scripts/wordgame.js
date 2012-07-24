@@ -81,9 +81,17 @@
 		recordGameState: function(){
 			if($._wordGame.gameDescriptor.saveScript)
 			
+			var t=new Date();
+			$._wordGame.gameState.time=t.toGMTString();
+			$._wordGame.gameState.saveFile=$._wordGame.gameDescriptor.saveFile;
 			
 			
-			$.getJSON($._wordGame.gameDescriptor.saveScript, $._wordGame.gameState);
+			
+			$.ajax({
+				url:$._wordGame.gameDescriptor.saveScript, 
+				data:$._wordGame.gameState
+			})
+			.error(function() { console.log("error saving file") });
 		},
 		
 		nextGame:function(){// called when a game is over (win/lose or quit) loads follow on game
@@ -194,13 +202,26 @@
 				
 			}
 			
-			//delete all that coldn't fit
+			//delete all that couldn't fit
 			for (var i = words.length-1; i >= 0; i--) {
 				if (words[i]=='*') {
 					words.splice(i, 1);
 					clues.splice(i,1);
 	
 				}
+			}
+			
+			//add list of clues to bottom
+			$('<div id="wordsToFind">Find words in the grid which are the answers to these clues</div>').appendTo(theGame);
+				
+			var table =$('<table id="wordsToFind">').appendTo(theGame);
+			
+			var row;
+			for(i=0;i<words.length;i++){
+				row=$('<tr>').appendTo(table);
+				
+				$('<td>',{"text" :clues[i]}).addClass(function(index) {
+  					return "word-" + i;}).appendTo(row);
 			}
 			
 			//create a array to record which words are found (init to false)
@@ -261,9 +282,11 @@
 			$('.square').on("touchmove",function(event){
 				event.preventDefault();
 				event.stopPropagation();
-				var evt=event.originalEvent;
-				var elem = document.elementFromPoint(evt.pageX, evt.pageY);
-				//$('#currentWord').html("te:"+evt.pageX+";"+evt.pageY+$(elem).html());	
+				var evt=event.originalEvent.touches[0];
+				var elem = document.elementFromPoint(evt.clientX, evt.clientY);
+				$('#currentWord').html("te:"+evt.clientX+";"+evt.clientY-$(window).scrollTop()+$(elem).html());
+				//if(!elem.hasClass('square'))
+					//return;	
 				if($._wordSearch.gridState.dragging){
 					$._wordSearch.gridState.endSq=$(elem).data();
 					$._wordSearch.computeSelectedSquares();
@@ -346,18 +369,7 @@
 			$('.wordsearch').disableSelection();//don't want mouse drags to do default browser selection
 			
 			
-			//add list of clues to bottom
-			$('<div id="wordsToFind">Find words in the grid which are the answers to these clues</div>').appendTo(theGame);
-				
-			var table =$('<table id="wordsToFind">').appendTo(theGame);
 			
-			var row;
-			for(i=0;i<words.length;i++){
-				row=$('<tr>').appendTo(table);
-				
-				$('<td>',{"text" :clues[i]}).addClass(function(index) {
-  					return "word-" + i;}).appendTo(row);
-			}
 			
 			//quitbutton
 			//$._wordGame.insertQuitButton();
@@ -641,7 +653,7 @@
 				var c= $._wordGame.gameState.wordToGuess.charAt(i); //use charAt fror ie6,7
 				if(c>='a' && c<='z'){
 					placeholders += '_';
-					$._wordMix.letterstoGuess++;
+					$._wordGame.gameState.letterstoGuess++;
 				}
 				else{
 					placeholders += c;// in case of spaces, puctuation etc (don't hide these)
@@ -713,7 +725,7 @@
 			  if ($._wordGame.gameState.wordToGuess.charAt(i).toUpperCase() == letter.toUpperCase()) {
 				 placeholders[i] = letter;
 				 wrongGuess = false;
-				$._wordMix.letterstoGuess--;
+				 $._wordGame.gameState.letterstoGuess--;
  
 			  }
 		   }
@@ -733,7 +745,7 @@
 		   $._hangMan.upDateImage(); //redraw based on number of bad guesses
 		   
 		   //check for wining condition
-		   if($._wordMix.letterstoGuess===0){
+		   if($._wordGame.gameState.letterstoGuess==0){
 				$._wordGame.gameState.won=true;
 				$._hangMan.gameOver();
 		   }
@@ -884,7 +896,7 @@ $._wordMix={ //word mix game methods & state
 		
 		newGame: function () {
 			
-			console.log("entering init");
+			//console.log("entering init");
 			/*
 			$('#quit').show();
 			$('#letters').show();
@@ -954,12 +966,12 @@ $._wordMix={ //word mix game methods & state
 				do{// only add letters not already in set
 					var rnum = Math.floor(Math.random() * chars.length);
 					c=chars.substring(rnum,rnum+1);
-					console.log("getting rnd letter:"+letters+"+"+c);
+					//console.log("getting rnd letter:"+letters+"+"+c);
 				}while(letters.indexOf(c)!=-1);
 				letters+=c;
 				
 			}
-			console.log("entering init1");
+			//console.log("entering init1");
 			
 			//shuffle letters using Fisher-Yates shuffle
 			var a = letters.split("");
@@ -984,13 +996,16 @@ $._wordMix={ //word mix game methods & state
 					
 				}
 				var tcell=$('<td/>').appendTo(trow);
-				$('<div/>', {
+				var b=$('<div></div>', {
 					click: function(){$._wordMix.letterTried($(this).html(),$(this).attr('id'));},
 					"id": "letterButton"+i,
-					"class":buttonClass+" letter"+letters[i],
-					"text":letters[i]
+					"class":buttonClass+" letter"+letters[i]
+					
 					}
-					).appendTo(tcell); //ie6,7 hack to add html after creation
+					).appendTo(tcell); 
+					
+				var d=b.get(0);//ie6,7 hack to add html after creation
+				d.innerHTML=letters[i];
 			}
 			
 			//console.log("entering init2");	
@@ -1089,7 +1104,7 @@ $._wordMix={ //word mix game methods & state
 				.removeData('srcBtn');
 
 			
-		},
+		}
 		
 		/*
 		checkLetter: function (letter) {
