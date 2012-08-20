@@ -242,8 +242,8 @@
 				var row=$('<tr>',{
 				"class":"row"});
 				
-				//var chars = "abcdefghijklmnopqrstuvwxyz";
-				var chars = "-"; //for debug
+				var chars = "abcdefghijklmnopqrstuvwxyz";
+				//var chars = "-"; //for debug
 	
 				for(j=0;j<gridSize;j++){
 					c=$._wordSearch.theGrid[i][j];
@@ -262,7 +262,7 @@
 				$('#grid').append(row);
 			}
 			
-			theGame.append("<div id='currentWord'>test</div>");//debug
+			//theGame.append("<div id='currentWord'>test</div>");//debug
 			
 			$._wordSearch.gridState.selectedWord='';
 			
@@ -284,7 +284,7 @@
 				event.stopPropagation();
 				var evt=event.originalEvent.touches[0];
 				var elem = document.elementFromPoint(evt.clientX, evt.clientY);
-				$('#currentWord').html("te:"+evt.clientX+";"+evt.clientY-$(window).scrollTop()+$(elem).html());
+				//$('#currentWord').html("te:"+evt.clientX+";"+evt.clientY-$(window).scrollTop()+$(elem).html()); //debug code
 				//if(!elem.hasClass('square'))
 					//return;	
 				if($._wordSearch.gridState.dragging){
@@ -302,7 +302,7 @@
 				$._wordSearch.computeSelectedSquares();
 				$._wordSearch.checkSelectedWord();
 				$('.selectedSquare').removeClass('selectedSquare');
-				$('#currentWord').html("mu:"+$._wordSearch.selectedWord);
+				//$('#currentWord').html("mu:"+$._wordSearch.selectedWord);
 				
 			});	
 				
@@ -445,7 +445,7 @@
 			//};
 			
 			
-			$('#currentWord').html($._wordGame.gameState.selectedWord);//debug
+			//$('#currentWord').html($._wordGame.gameState.selectedWord);//debug
 			
 			
 			
